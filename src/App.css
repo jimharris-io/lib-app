@@ -1,38 +1,191 @@
-.App {
+.colour-swatch.app {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2rem;
+  border: 1px solid;
+}
+
+.shape.app {
+  width: 4rem;
+  height: 4rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.use-cursor {
+  cursor: pointer;
+}
+
+.preview.app {
+  position: relative;
+  background: black;
+}
+
+.preview.app svg {
+  position: relative;
+  height: 275px;
+  max-height: 275px;
+  /* left: 25px;
+  top: 20px; */
+}
+
+.preview.admin {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* fluid text */
+
+.display, .preview {
+  position: relative;
+}
+
+.display {
+  
+}
+
+.display .message, .preview .message {
+  position: absolute;
+  text-align: center;
+  /* top: 50%;
+  transform: translateY(-50%) */
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+.fit {
+  line-height: 1;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* .display .message {
+  display: block;
+  position: absolute;
+  font-size: 1.75vw;
+  width: 75%;
+  text-align: center;
+  line-height: 1.1;
+  left: 12.5%;
+  top: 50%;
+  transform: translateY(-50%)
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.preview.app .message {
+  display: block;
+  position: absolute;
+  font-size: 1.75rem;
+  width: 25%;
+  text-align: center;
+  line-height: 1.1;
+  left: 37.5%;
+  top: 50%;
+  transform: translateY(-50%)
+} */
+
+/* .admin .message {
+  width: 256px;
+} */
+
+.admin .font-family {
+  width: 48px;
+  font-size: 1.5rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.cursive {
+  font-family: 'Caveat', cursive;
+}
+
+.brush {
+  font-family: 'Caveat Brush', cursive;
+}
+
+.serif {
+  font-family: 'DM Serif Display', serif;
+}
+
+.sans-serif {
+  font-family: 'Red Hat Display', sans-serif;
+}
+
+input[type=radio] {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* wall */
+
+html, body, #root {
+  height: 100%;
+}
+
+.wall {
+  position: relative;
+  /* background: #222222; */
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  background: black;
+  position:relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.cell {
+  /* position: relative; */
+  /* box-sizing: border-box; */
+  /* border: 1px dashed #333333; */
+}
+
+.cell.display {
+  /* position: absolute; */
+}
+
+body {
+  background: black;
+}
+
+.postapp .card {
+  background: black;
   color: white;
+  height: 590px;
+  max-height: 590px;
+  max-width: 768px;
 }
 
-.App-link {
-  color: #61dafb;
+.card-header .sort {
+  color: black;
+  padding: 4px;
+  border: 1px solid black;
+  border-radius: 6px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.card-header .sort.disabled {
+  color: grey;
+  border-color: lightgrey;
+}
+
+.card-header .sort.danger {
+  color: red;
+  border-color: red;
+}
+
+.alert--root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    text-align: center;
+}
+
+.network-error {
+  
 }
