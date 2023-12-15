@@ -33,11 +33,29 @@ const MakePostAdmin = () => {
     }
 
     const rand = () => {
+
+        const shuffleArray = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // background and border colour should not be black
+        let colours = [0, 1, 2, 3, 4, 6];
+        colours = shuffleArray(colours);
+        setBackgroundColour(colours.pop());
+        setBorderColour(colours.pop());
+
+        // text colour can be black
+        colours.push(5);
+        colours = shuffleArray(colours);
+        setTextColour(colours.pop());
+
         setShape(parseInt(Math.random() * 4));
-        setFont(parseInt(Math.random() * 4));
-        setTextColour(parseInt(Math.random() * 7));
-        setBorderColour(parseInt(Math.random() * 7));
-        setBackgroundColour(parseInt(Math.random() * 7));
+        setFont(parseInt(Math.random() * 2));
+        
         setMessage(randomMessages[parseInt(Math.random() * randomMessages.length)])
     }
 

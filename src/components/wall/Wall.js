@@ -1,5 +1,7 @@
 // components
 import Post from "../wall/Post";
+import Cta from "./Cta";
+import Logos from "./Logos";
 
 // app
 import { useOutletContext } from "react-router-dom";
@@ -7,7 +9,7 @@ import { colours, grids, walks } from './../../constants/constants';
 import { useState } from 'react';
 
 document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
+    if (e.getModifierState && e.getModifierState("Control") && e.code === "Space") {
         toggleFullScreen();
     }
 })
@@ -42,7 +44,15 @@ const Wall = () => {
             gridColumn: walks[0][i].column - grids[grid].column + 1,
             gridRow: walks[0][i].row - grids[grid].row + 1
         }
-        return <div style={position} className="cell" key={`container-${i}`}>
+        let anim = "";
+        if(i === wallPosts.length - 1) {
+            if(Math.random() < .5){
+                anim = "wobble";
+            } else {
+                anim = "pulse";
+            }
+        }
+        return <div style={position} className={`cell ${anim}`} key={`container-${i}`}>
             {post}
         </div>
     })
@@ -79,6 +89,8 @@ const Wall = () => {
             {/* {draw} */}
             {containers}
         </div>
+        <Cta context="wall"/>
+        <Logos context="wall"/>
     </div>
 }
 

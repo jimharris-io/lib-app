@@ -1,3 +1,94 @@
+/* fonts */
+
+@font-face {
+  font-family: "Agrandir Heavy";
+  src: url('./media/fonts/PPAgrandir-TightHeavy.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: "Söhne Halbfett";
+  src: url('./media/fonts/Söhne-Halbfett.otf') format('opentype');
+}
+
+.typeface-1 {
+  font-family: "Agrandir Heavy", serif;
+}
+
+.typeface-2 {
+  font-family: "Söhne Halbfett", serif;
+}
+
+/* animation */
+
+@keyframes pulse{
+  25%  {transform: scale(0.9);}
+  75%  {transform: scale(1.1);}
+}
+
+.pulse {
+  animation: pulse 0.5s 0.5s ease-in 3;
+}
+
+@keyframes wobble {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(0eg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.wobble {
+  animation: wobble 0.3s 0.5s 5;
+}
+
+/* .cursive {
+  font-family: 'Caveat', cursive;
+}
+
+.brush {
+  font-family: 'Caveat Brush', cursive;
+}
+
+.serif {
+  font-family: 'DM Serif Display', serif;
+}
+
+.sans-serif {
+  font-family: 'Red Hat Display', sans-serif;
+} */
+
+/* cta and logos */
+
+.wall.cta, .wall.logos {
+  position: fixed;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.wall.cta {
+  color: white;
+  font-family: "Söhne Halbfett";
+  left: 2.8vw;
+  bottom: 7vh;
+  width: 18vw;
+  font-size: calc( 16px + (24 - 16) * (100vw - 1024px) / (1920 - 1024));
+  line-height: 1.1;
+}
+
+.wall.logos {
+  background-color: #231f20;
+  right: 0;
+  background-image: url('./media/svg/logos.svg');
+  bottom: 5vh;
+  height: 14.3vh;
+  width: 23vw;
+  background-position: center;
+  background-origin: content-box;
+  padding: 1.75vw;
+}
+
+/* */
+
 .colour-swatch.app {
   display: inline-block;
   width: 2rem;
@@ -95,21 +186,7 @@
   font-size: 1.5rem;
 }
 
-.cursive {
-  font-family: 'Caveat', cursive;
-}
 
-.brush {
-  font-family: 'Caveat Brush', cursive;
-}
-
-.serif {
-  font-family: 'DM Serif Display', serif;
-}
-
-.sans-serif {
-  font-family: 'Red Hat Display', sans-serif;
-}
 
 input[type=radio] {
   opacity: 0;
@@ -188,4 +265,31 @@ body {
 
 .network-error {
   
+}
+
+/* temp logo/cta, editor */
+
+.bhl {
+  position: fixed;
+  bottom: 5vh;
+  width: 20vw;
+  height: 9vh;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* .bhl.cta {
+  left: 5vw;
+  background-image: url('./bhl_cta.png');
+  background-position: bottom left;
+}
+
+.bhl.logo {
+  right: 5vw;
+  background-image: url('./bhl_logo.png');
+  background-position: bottom right;
+} */
+
+.preview.app .message {
+  transform: scale(0.5);
 }

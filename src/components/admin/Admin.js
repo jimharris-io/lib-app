@@ -192,7 +192,7 @@ const Admin = () => {
             <DatabaseDown className={`sort use-cursor`} onClick={downloadDatabaseHandler} size={32}/>
             <DatabaseX className={`sort use-cursor danger`} onClick={dumpDatabaseHandler} size={32}/>
             <PersonCircle className={`sort use-cursor`} onClick={signOutHandler} size={32}/>
-            <EmojiSmile className={`sort use-cursor`} onClick={devHandler} size={32}/>
+            {/* <EmojiSmile className={`sort use-cursor`} onClick={devHandler} size={32}/> */}
         </Stack>
 
     const allPosts = sorted.map((post)=><PostAdmin downloadPost={downloadPosthandler} key={post.id} updateFavourite={updateFavourite} delete={deletePost} post={post}/>)
