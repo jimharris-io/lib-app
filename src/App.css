@@ -41,6 +41,128 @@
   animation: wobble 0.3s 0.5s 5;
 }
 
+.measure {
+  opacity: 0;
+  position: fixed;
+  left: -9999px;
+}
+
+/* posting app */
+
+main#posting-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: white;
+}
+
+main#posting-app header,
+main#posting-app footer,
+main#posting-app div#contents section#preview,
+main#posting-app div#contents section#editor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main#posting-app header {
+  background: rgba(255, 0, 0, .25);
+  min-height: 10vh;
+}
+
+main#posting-app footer {
+  background: rgba(0, 255, 0, .25);
+  min-height: 10vh;
+}
+
+main#posting-app div#contents {
+  flex-grow: 1;
+  display: flex;
+}
+
+main#posting-app div#contents section#preview {
+  background: rgba(255, 255, 0, .25);
+  flex-grow: 1;
+}
+
+main#posting-app div#contents section#editor {
+  background: rgba(0, 0, 255, .25);
+  flex-grow: 1;
+}
+
+main#posting-app div#contents section#editor .carousel {
+  width: 100%;
+  height: 100%;
+}
+
+main#posting-app div#contents section#editor .carousel,
+main#posting-app div#contents section#editor .carousel .carousel-inner,
+main#posting-app div#contents section#editor .carousel .carousel-inner .carousel-item  {
+  height: 100%;
+}
+
+main#posting-app div#contents section#editor .carousel .carousel-item .carousel-item-contents {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main#posting-app div#contents section#editor .carousel .carousel-item .carousel-item-contents div {
+  background: rgba(0, 255, 255, .25);
+}
+
+@media (orientation: portrait) {
+  main#posting-app div#contents {
+    flex-direction: column;
+  }
+}
+
+/* @media (any-pointer: fine) {
+  main#posting-app div#contents section#editor .touch-device {
+    display: none;
+  }
+}
+
+@media (any-pointer: coarse) {
+  main#posting-app div#contents section#editor .mouse-device {
+    display: none;
+  }
+} */
+
+@media only screen and (orientation: landscape) {
+  main#posting-app div#contents section#editor, main#posting-app div#contents section#preview {
+    width: 50%;
+  }
+}
+
+@media only screen and (orientation: portrait) {
+  main#posting-app div#contents section#editor, main#posting-app div#contents section#preview {
+    height: 50%;
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  main#posting-app header, main#posting-app footer {
+    min-height: 20vh;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1199px) and (orientation: landscape) {
+  main#posting-app header, main#posting-app footer {
+    min-height: 15vh;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  main#posting-app {
+    height: auto;
+  }
+  main#posting-app header, main#posting-app footer {
+    min-height: auto;
+  }
+}
+
 /* .cursive {
   font-family: 'Caveat', cursive;
 }

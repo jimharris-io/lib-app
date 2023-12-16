@@ -1,8 +1,9 @@
 // bootstrap
 import { Container, Col, Row, Card, Stack, Button, Form } from "react-bootstrap";
+import Carousel from 'react-bootstrap/Carousel';
 
 // app
-import { colours, shapes, fonts, paths, randomMessages } from './../../constants/constants';
+import { colours, shapes, fonts, randomMessages } from './../../constants/constants';
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
@@ -19,6 +20,11 @@ const MakePostAdmin = () => {
     const [ borderColour, setBorderColour ] = useState(2);
 
     const [,, savePost] = useOutletContext();
+
+    const [index, setIndex] = useState(0);
+    const handleSelect = (selectedIndex, e) => {
+      setIndex(selectedIndex);
+    };
 
     const saveHandler = (event) => {
         event.preventDefault();
@@ -72,25 +78,7 @@ const MakePostAdmin = () => {
         setShape(index);
     }
     const selectShape = shapes.map((thisShape, i) => {
-        let path;
-        switch (thisShape.value) {
-            case 0:
-                path = paths.square.path;
-                break;
-            case 1:
-                path = paths.circle.path;
-                break;
-            case 2:
-                path = paths.heart.path;
-                break;
-            case 3:
-                path = paths.rosette.path;
-                break;
-            default:
-                path = paths.square.path;
-                break;
-        }
-
+        
         const fill = colours.find((colour) => colour.value === backgroundColour)?.hex;
         let stroke = "none";
         let strokeWidth = 0;
@@ -99,8 +87,10 @@ const MakePostAdmin = () => {
             stroke = colours.find((colour) => colour.value === backgroundColour)?.borderColor;
         }
 
+        const shapeInfo = shapes.find(s => s.value === thisShape.value);
+
         const svg = `<svg version="1.1" id="shape" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100%" viewBox="0 0 344 351">
-                        <path fill="${fill}" opacity="1.000000" stroke-width="${strokeWidth}" stroke="${stroke}" d="${path}"/>
+                        <path fill="${fill}" opacity="1.000000" stroke-width="${strokeWidth}" stroke="${stroke}" d="${shapeInfo.path}"/>
                     </svg>`;
 
         const encoded = window.btoa(svg);
@@ -184,21 +174,62 @@ const MakePostAdmin = () => {
             </Stack>
         </Form>
 
-        return <Container fluid className="postapp">
-            <Row className="mt-3">
-                <Col>
-                    <Card>
-                        {/* <Card.Header>App</Card.Header> */}
-                        <Card.Body>
-                            <Stack direction="vertical" gap={3}>
-                                {preview}
-                                {form}
-                            </Stack>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
+        // return <Container fluid className="postapp">
+        //     <Row className="mt-3">
+        //         <Col>
+        //             <Card>
+        //                 {/* <Card.Header>App</Card.Header> */}
+        //                 <Card.Body>
+        //                     <Stack direction="vertical" gap={3}>
+        //                         {preview}
+        //                         {form}
+        //                     </Stack>
+        //                 </Card.Body>
+        //             </Card>
+        //         </Col>
+        //     </Row>
+        // </Container>
+
+        const data = [
+            {
+                name: "first",
+            },
+            {
+                name: "second",
+            },
+            {
+                name: "third",
+            }
+        ]
+
+        return <main className="container-lg" id="posting-app">
+            <header>
+                <div>header</div>
+            </header>
+            <div id="contents">
+                <section id="preview">
+                    <div>preview</div>
+                </section>
+                <section id="editor">
+                    
+                    <Carousel wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        {data.map((slide, i) => {
+                            return (
+                                <Carousel.Item key={`slide-${i}`}>
+                                    <div className="carousel-item-contents">
+                                        <div>slide-{slide.name}</div>
+                                    </div>
+                                </Carousel.Item>
+                            )
+                        })}
+                    </Carousel>
+
+                </section>
+            </div>
+            <footer>
+                <div>footer</div>
+            </footer>
+        </main>
 }
 
 export default MakePostAdmin;

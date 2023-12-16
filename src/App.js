@@ -95,8 +95,6 @@ function App(props) {
     });
   }
 
-  // const allPosts = posts.map((post)=><PostAdmin key={post.id} delete={deletePost} post={post}/>)
-
   const adjAlert = props.showAlert ? {marginTop: "4rem"} : null;
 
   const getGridIndex = (grids, lastStep, lastGridIndex) => {
@@ -124,7 +122,9 @@ function App(props) {
 
   return (
     <div className="h-100" style={adjAlert}>
+
       <Outlet context={[posts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, grid]}></Outlet>
+      
       <Modal show={showModal} onHide={modalEscape}>
         <Modal.Header closeButton>
           <Modal.Title>{modalContents.title}</Modal.Title>
