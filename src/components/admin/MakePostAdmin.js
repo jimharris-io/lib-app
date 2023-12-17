@@ -192,13 +192,42 @@ const MakePostAdmin = () => {
 
         const data = [
             {
-                name: "first",
+                jsx: <Form.Group className="mb-3" value={1} controlId="shape">
+                        <Form.Label>Shape</Form.Label>
+                        <Stack direction="horizontal" gap={3}>
+                            {selectShape}
+                        </Stack>
+                    </Form.Group>,
             },
             {
-                name: "second",
+                jsx: <Form.Group className="mb-3" controlId="backgroundColour">
+                        <Form.Label>Background colour</Form.Label>
+                        <Stack direction="horizontal" gap={3}>
+                            {selectBackgroundColour}
+                        </Stack>
+                    </Form.Group>,
             },
             {
-                name: "third",
+                jsx: <Form.Group className="mb-3" controlId="borderColour">
+                        <Form.Label>Border colour</Form.Label>
+                        <Stack direction="horizontal" gap={3}>
+                            {selectBorderColour}
+                        </Stack>
+                    </Form.Group>
+            },
+            {
+                jsx: <Form.Group className="mb-3" controlId="font">
+                        <Form.Label>Font</Form.Label>
+                        <Form.Select onChange={changeFont} value={font}>
+                            {selectFont}
+                        </Form.Select>
+                    </Form.Group>
+            },
+            {
+                jsx: <Stack direction="horizontal" gap={2}>
+                        <Button variant="primary" type="submit">Save</Button>
+                        <Button variant="secondary" onClick={rand}>Rand</Button>
+                    </Stack>
             }
         ]
 
@@ -207,22 +236,26 @@ const MakePostAdmin = () => {
                 <div>header</div>
             </header>
             <div id="contents">
+
                 <section id="preview">
-                    <div>preview</div>
+                    <div>{preview}</div>
                 </section>
+
                 <section id="editor">
-                    
-                    <Carousel wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
-                        {data.map((slide, i) => {
-                            return (
-                                <Carousel.Item key={`slide-${i}`}>
-                                    <div className="carousel-item-contents">
-                                        <div>slide-{slide.name}</div>
-                                    </div>
-                                </Carousel.Item>
-                            )
-                        })}
-                    </Carousel>
+
+                    <Form className="w-100 h-100" onSubmit={saveHandler}>      
+                        <Carousel wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                            {data.map((slide, i) => {
+                                return (
+                                    <Carousel.Item key={`slide-${i}`}>
+                                        <div className="carousel-item-contents">
+                                            {slide.jsx}
+                                        </div>
+                                    </Carousel.Item>
+                                )
+                            })}
+                        </Carousel>
+                    </Form>
 
                 </section>
             </div>

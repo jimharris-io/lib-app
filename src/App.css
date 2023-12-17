@@ -109,7 +109,7 @@ main#posting-app div#contents section#editor .carousel .carousel-item .carousel-
 }
 
 main#posting-app div#contents section#editor .carousel .carousel-item .carousel-item-contents div {
-  background: rgba(0, 255, 255, .25);
+  /* background: rgba(0, 255, 255, .25); */
 }
 
 @media (orientation: portrait) {
