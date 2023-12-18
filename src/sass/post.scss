@@ -1,0 +1,45 @@
+// common
+
+.display, .preview {
+  position: relative;
+}
+
+// message
+
+.display .message, .preview .message {
+  position: absolute;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+.preview.app .message {
+  transform: scale(0.5);
+}
+
+.fit {
+  line-height: 1;
+  text-align: center;
+}
+
+// admin
+
+.preview.admin {
+  width: 3rem;
+  height: 3rem;
+}
+
+// posting app
+
+.preview.app {
+  position: relative;
+  background: black;
+}
+
+.preview.app svg {
+  position: relative;
+  height: 275px;
+  max-height: 275px;
+}

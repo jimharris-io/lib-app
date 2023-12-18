@@ -1,6 +1,6 @@
 // components
 import Post from "../wall/Post";
-import PostAdmin from "./PostAdmin";
+import AdminItem from "./AdminItem";
 import { PersonCircle, DatabaseX, DatabaseDown, EmojiSmile, SortAlphaDown, SortAlphaUp, SortNumericUp, SortNumericDown, Heart, HeartFill } from 'react-bootstrap-icons';
 
 // app
@@ -195,12 +195,12 @@ const Admin = () => {
             {/* <EmojiSmile className={`sort use-cursor`} onClick={devHandler} size={32}/> */}
         </Stack>
 
-    const allPosts = sorted.map((post)=><PostAdmin downloadPost={downloadPosthandler} key={post.id} updateFavourite={updateFavourite} delete={deletePost} post={post}/>)
+    const allPosts = sorted.map((post)=><AdminItem downloadPost={downloadPosthandler} key={post.id} updateFavourite={updateFavourite} delete={deletePost} post={post}/>)
 
     const err = allPosts.length > 0 ? '' : <span>No posts to show</span>
     const network = error ? <Card.Text className="text-capitalize text-danger mt-3">{error}</Card.Text> : '';
 
-    const main = <Card>
+    const main = <Card className="admin">
                     <Card.Header>
                         <Stack className="justify-content-between" direction="horizontal">
                             <span>Posts</span>

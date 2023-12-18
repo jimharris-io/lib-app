@@ -5,11 +5,10 @@ import { configureStore } from '@reduxjs/toolkit'
 import reducer from './store/reducer';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import './index.css';
 import App from './App';
 import Wall from './components/wall/Wall';
 import Admin from './components/admin/Admin';
-import MakePostAdmin from './components/admin/MakePostAdmin';
+import PostingApp from './components/posting/PostingApp';
 import reportWebVitals from './reportWebVitals';
 
 const store = configureStore({reducer});
@@ -30,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: "post",
-        element: <MakePostAdmin/>
+        element: <PostingApp/>
       }
     ]
   }

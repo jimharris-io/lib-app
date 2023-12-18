@@ -3,14 +3,14 @@ import { Container, Col, Row, Card, Stack, Button, Form } from "react-bootstrap"
 import Carousel from 'react-bootstrap/Carousel';
 
 // app
-import { colours, shapes, fonts, randomMessages } from './../../constants/constants';
+import { colours, shapes, fonts, randomMessages } from '../../constants/constants';
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 // components
 import Post from "../wall/Post";
 
-const MakePostAdmin = () => {
+const PostingApp = () => {
 
     const [ message, setMessage ] = useState('default message');
     const [ font, setFont ] = useState(0);
@@ -265,4 +265,4 @@ const MakePostAdmin = () => {
         </main>
 }
 
-export default MakePostAdmin;
+export default PostingApp;

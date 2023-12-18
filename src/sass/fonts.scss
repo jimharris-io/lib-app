@@ -1,0 +1,17 @@
+@font-face {
+  font-family: "Agrandir Heavy";
+  src: url("./../media/fonts/PPAgrandir-TightHeavy.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Söhne Halbfett";
+  src: url("./../media/fonts/Söhne-Halbfett.otf") format("opentype");
+}
+
+.typeface-1 {
+  font-family: "Agrandir Heavy", serif;
+}
+
+.typeface-2 {
+  font-family: "Söhne Halbfett", serif;
+}

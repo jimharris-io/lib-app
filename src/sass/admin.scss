@@ -1,0 +1,25 @@
+.admin {
+  .font-family {
+    width: 48px;
+    font-size: 1.5rem;
+  }
+  .use-cursor {
+    cursor: pointer;
+  }
+  .card-header {
+    .sort {
+      color: black;
+      padding: 4px;
+      border: 1px solid black;
+      border-radius: 6px;
+      &.disabled {
+        color: grey;
+        border-color: lightgrey;
+      }
+      &.danger {
+        color: #721c24;
+        border-color: #721c24;
+      }
+    }
+  }
+}

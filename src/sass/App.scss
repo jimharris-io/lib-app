@@ -1,0 +1,25 @@
+@import 'fonts';
+@import 'animation';
+@import 'posting';
+@import 'wall';
+@import 'post';
+@import 'admin';
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: black;
+}
+
+.alert--root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 0;
+  text-align: center;
+}
+

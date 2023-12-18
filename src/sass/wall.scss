@@ -1,0 +1,36 @@
+.wall {
+  position: relative;
+  margin: 0 auto;
+  .grid {
+    display: grid;
+    background: black;
+    position:relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.cta, &.logos {
+    position: fixed;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  &.cta {
+    color: white;
+    font-family: "Söhne Halbfett";
+    left: 2.8vw;
+    bottom: 7vh;
+    width: 18vw;
+    font-size: calc( 16px + (24 - 16) * (100vw - 1024px) / (1920 - 1024));
+    line-height: 1.1;
+  }
+  &.logos {
+    background-color: #231f20;
+    right: 0;
+    background-image: url('./../media/svg/logos.svg');
+    bottom: 5vh;
+    height: 14.3vh;
+    width: 23vw;
+    background-position: center;
+    background-origin: content-box;
+    padding: 1.75vw;
+  }
+}

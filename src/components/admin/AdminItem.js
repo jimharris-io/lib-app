@@ -3,7 +3,7 @@ import { Stack } from "react-bootstrap";
 import { Trash3, Heart, Camera, HeartFill } from 'react-bootstrap-icons';
 
 // app
-import { adminMessageLength, colours, fonts, shapes } from './../../constants/constants';
+import { adminMessageLength, colours, fonts, shapes } from '../../constants/constants';
 
 // components
 import Post from "../wall/Post";
@@ -66,8 +66,8 @@ const PostAdmin = (props) => {
         ${date.getHours()}:${date.getMinutes()}`
 
     return (
-        <Stack className="admin justify-content-between" direction="horizontal" gap={3}>
-            <Stack className="admin justify-content-between" direction="horizontal" gap={3}>
+        <Stack className="justify-content-between" direction="horizontal" gap={3}>
+            <Stack className="justify-content-between" direction="horizontal" gap={3}>
                 <span>{when}</span>
                 <span className="message">
                     {`${props.post.message.slice(0, adminMessageLength)}${suffix}`}

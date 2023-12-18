@@ -1,4 +1,4 @@
-import './App.css';
+import './sass/App.scss';
 
 // app
 import { useEffect, useState, useRef } from 'react';

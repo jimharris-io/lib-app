@@ -52,7 +52,7 @@ const Wall = () => {
                 anim = "pulse";
             }
         }
-        return <div style={position} className={`cell ${anim}`} key={`container-${i}`}>
+        return <div style={position} className={`${anim}`} key={`container-${i}`}>
             {post}
         </div>
     })
@@ -73,20 +73,8 @@ const Wall = () => {
         gridTemplateRows: `repeat(${gridHeight}, 1fr)`
     }
     
-    // let draw = [];
-    // for(let j = 0; j < 15; j++){
-    //     draw.push(<div className="cell" key={`empty-${j}`}></div>)
-    // }
-    // const order = [7, 8, 13, 2, 1, 0, 11, 12, 10, 6, 14, 9, 4, 5, 3]
-    // for(let i = 0; i < wallPosts.length; i++) {
-    //     draw[order[i]] = wallPosts[i];
-    // }
-
-    // style={{background: `rgba(${256 - ((128 / 16) * j)}, 0, ${((128 / 16) * j) + 128}`}}
-    
     return <div style={wallStyle} className="wall h-100">
         <div style={gridStyle} className="grid">
-            {/* {draw} */}
             {containers}
         </div>
         <Cta context="wall"/>
