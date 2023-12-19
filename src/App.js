@@ -15,6 +15,16 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { Alert, Modal, Button } from "react-bootstrap";
 
+// preload agrandir
+const body = document.getElementsByTagName('body')[0];
+const div = document.createElement('div');
+body.append(div);
+div.className = "preload-agrandir";
+div.innerHTML = "preload agrandir"
+setTimeout(()=>{
+  div.remove();
+}, 0)
+
 function App(props) {
 
   const [app, setApp] = useState();
@@ -38,7 +48,7 @@ function App(props) {
   }
 
   const modalResolve = () => {
-    modalPromise.callback();
+    modalPromise?.callback && modalPromise.callback();
     setShowModal(false);
   }
 
@@ -125,15 +135,15 @@ function App(props) {
 
       <Outlet context={[posts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, grid]}></Outlet>
       
-      <Modal show={showModal} onHide={modalEscape}>
+      <Modal dialogClassName={modalContents.customClass} centered show={showModal} onHide={modalEscape}>
         <Modal.Header closeButton>
           <Modal.Title>{modalContents.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{modalContents.body}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={modalReject}>
+          { modalContents.reject && <Button variant="secondary" onClick={modalReject}>
             {modalContents.reject}
-          </Button>
+          </Button>}
           <Button variant="primary" onClick={modalResolve}>
             {modalContents.resolve}
           </Button>

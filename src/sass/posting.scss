@@ -1,17 +1,39 @@
-.colour-swatch.app {
+$box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
+
+.colour-swatch {
   display: inline-block;
-  width: 2rem;
-  height: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: 2rem;
   border: 1px solid;
+  &.checked {
+    box-shadow: $box-shadow;
+  }
+  &.unavailable {
+    opacity: .25;
+  }
 }
 
-.shape.app {
-  width: 4rem;
-  height: 4rem;
+.font-select {
+  padding: 1rem 0;
+  opacity: .34;
+  font-size: 2rem;
+  &.checked {
+    opacity: 1;
+  }
+}
+
+.shape {
+  width: 5.5rem;
+  height: 5.5rem;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+input[id="message"] {
+  opacity: 0;
+  position: fixed;
 }
 
 input[type="radio"] {
@@ -20,6 +42,53 @@ input[type="radio"] {
   height: 100%;
   cursor: pointer;
 }
+
+label {
+  width: 100%;
+  text-align: center;
+  font-family: "Söhne Halbfett", serif;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+// modal
+
+.modal-dialog.posting {
+  .modal-{
+    &header {
+      .btn-close {
+        display: none;
+      }
+    }
+    &header, &footer {
+      border: none;
+      justify-content: center;
+    }
+    &content {
+      background-color: #111111;
+      color: white;
+    }
+    &title {
+      width: 100%;
+      font-family: "Söhne Halbfett", serif;
+    }
+    &body {
+      font-size: 1.25rem;
+      font-family: "Söhne Leicht", serif;
+    }
+    &title, &body {
+      text-align: center;
+    }
+  }
+}
+
+// temp fix
+
+.font-select .font-label.typeface-2 {
+  position: relative;
+  top: -3px;
+}
+
 
 // structure
 
@@ -55,12 +124,12 @@ main#posting-app div#contents {
 }
 
 main#posting-app div#contents section#preview {
-  background: rgba(255, 255, 0, 0.25);
+  // background: rgba(255, 255, 0, 0.25);
   flex-grow: 1;
 }
 
 main#posting-app div#contents section#editor {
-  background: rgba(0, 255, 255, 0.25);
+  // background: rgba(0, 255, 255, 0.25);
   flex-grow: 1;
 }
 

@@ -22,35 +22,8 @@ const PostAdmin = (props) => {
         props.downloadPost(props.post)
     }
 
-    const backgroundColour = colours.find((colour) => colour.value === props.post.backgroundColour);
-    const textColour = colours.find((colour) => colour.value === props.post.textColour);;  
-    const borderColour = colours.find((colour) => colour.value === props.post.borderColour);
-    const font = fonts.find((font) => font.value === props.post.font);
-    let fontFamily;
-    switch (font.value) {
-        case 0:
-            fontFamily = "cursive";
-            break;
-        case 1:
-            fontFamily = "brush";
-            break;
-        case 2:
-            fontFamily = "serif";
-            break;
-        case 3:
-            fontFamily = "sans-serif";
-            break;
-        default:
-            fontFamily = "sans-serif";
-            break;
-    }
-    let textStyle = { color: textColour.hex};
-    if(textColour.value === 6) {
-        textStyle = { background: 'black', ...textStyle }
-    }
-    const shape = shapes.find((shape) => shape.value === props.post.shape);
     const preview = <div>
-        <Post mode="preview" context="admin" font={font.value} message="" textColour={0} fill={backgroundColour.hex} strokeWidth="24" stroke={borderColour.hex} shape={shape.value}/>
+        <Post classList="item admin" font={props.post.font} message="Abc" textColour={props.post.textColour} fill={props.post.backgroundColour} strokeWidth="24" stroke={props.post.borderColour} shape={props.post.shape}/>
     </div>
 
     const suffix = props.post.message.length > adminMessageLength ? "..." : "";
@@ -74,9 +47,6 @@ const PostAdmin = (props) => {
                 </span>
             </Stack>
             <Stack direction="horizontal" gap={3}>
-                <span style={textStyle} className={`font-family ${fontFamily}`}>
-                    Abc
-                </span>
                 <span>{preview}</span>
                 <Camera className="use-cursor" onClick={cameraHandler} size={24}/>
                 {fave}

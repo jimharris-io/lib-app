@@ -23,3 +23,41 @@ body {
   text-align: center;
 }
 
+// // ipad mini fixes for demo
+
+// // javascript
+
+// if(navigator?.platform === "iPad"){
+//   const body = document.getElementsByTagName('body')[0];
+//   body.classList.add("ipad");
+// }
+
+// body.ipad {
+//   div.h-100.justify-content-evenly.vstack {
+//     label.form-label {
+//       margin-bottom: 1.5rem;
+//     }
+//   }
+//   div.hstack.gap-4 {
+//     div.shape {
+//       margin: 0 0.75rem;
+//     }
+//   }
+//   div.justify-content-center.hstack.gap-4 {
+//     margin-top: 1.5rem;
+//     div.colour-swatch {
+//       margin: 0 0.75rem;
+//       margin-bottom: 1rem;
+//     }
+//   }
+//   div.h-100.justify-content-evenly.vstack div.hstack.gap-4 {
+//     .font-select {
+//       margin: 0 0.75rem;
+//     }
+//   }
+//   div.justify-content-center.hstack.gap-4 {
+//     button {
+//       margin: 0 0.75rem;
+//     }
+//   }
+// }

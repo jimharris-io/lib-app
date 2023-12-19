@@ -33,7 +33,7 @@ export const colours = [
         label: "Black",
         hex: "#000000",
         value: 5,
-        borderColor: "#ffffff"
+        borderColor: "#666666"
     },
     {
         label: "White",
@@ -99,7 +99,7 @@ export const fonts = [
     },
     {
         label: "Typeface 02",
-        className: "Typeface-2",
+        className: "typeface-2",
         lineHeight: 1,
         value: 1
     }

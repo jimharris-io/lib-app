@@ -8,6 +8,15 @@
   src: url("./../media/fonts/Söhne-Halbfett.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "Söhne Leicht";
+  src: url("./../media/fonts/Söhne-Leicht.otf") format("opentype");
+}
+
+.sohne-leicht {
+  font-family: "Söhne Leicht", serif;
+}
+
 .typeface-1 {
   font-family: "Agrandir Heavy", serif;
 }

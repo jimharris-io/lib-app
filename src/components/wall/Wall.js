@@ -30,9 +30,7 @@ const Wall = () => {
     // sorted = sorted.splice(0, 2); // dev
     
     let wallPosts = sorted.map((post, i) => {
-        const fill = colours.find((colour) => colour.value === post.backgroundColour)?.hex;
-        const stroke = colours.find((colour) => colour.value === post.borderColour)?.hex;
-        const wallPost = <Post key={`post-${grid}-${i}`} mode="display" font={post.font} message={post.message} textColour={post.textColour} fill={fill} strokeWidth="5" stroke={stroke} shape={post.shape}/>
+        const wallPost = <Post key={`post-${grid}-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
         return wallPost;
     })
 

@@ -66,9 +66,7 @@ const Admin = () => {
 
     const downloadPosthandler = useCallback((post)=>{
 
-        const fill = colours.find((colour) => colour.value === post.backgroundColour)?.hex;
-        const stroke = colours.find((colour) => colour.value === post.borderColour)?.hex;
-        const source = <Post mode="display" font={post.font} message={post.message} textColour={post.textColour} fill={fill} strokeWidth="5" stroke={stroke} shape={post.shape}/>
+        const source = <Post classList="download display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
 
         setShowModal(true);
         setModalContents({
