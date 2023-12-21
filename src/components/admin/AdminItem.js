@@ -29,14 +29,11 @@ const PostAdmin = (props) => {
     const suffix = props.post.message.length > adminMessageLength ? "..." : "";
 
     const fave = props.post.favourite ?
-        <HeartFill className="use-cursor" onClick={toggleFavouriteHandler} size={24}/> :
-        <Heart className="use-cursor" onClick={toggleFavouriteHandler} size={24}/>
+        <HeartFill alt="Unlike" title="Unlike" className="use-cursor" onClick={toggleFavouriteHandler} size={24}/> :
+        <Heart alt="Like" title="Like" className="use-cursor" onClick={toggleFavouriteHandler} size={24}/>
 
     const date = props.post.created.toDate();
-    const when = `${date.toLocaleString('en-gb', {weekday: 'short'})}
-        ${date.toLocaleString('en-gb', {month:'short'})}
-        ${date.getDate()}
-        ${date.getHours()}:${date.getMinutes()}`
+    const when = date.toLocaleString("en-us", {month: 'short', weekday: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
     return (
         <Stack className="justify-content-between" direction="horizontal" gap={3}>
@@ -48,9 +45,9 @@ const PostAdmin = (props) => {
             </Stack>
             <Stack direction="horizontal" gap={3}>
                 <span>{preview}</span>
-                <Camera className="use-cursor" onClick={cameraHandler} size={24}/>
+                <Camera alt="Download image" title="Download image" className="use-cursor" onClick={cameraHandler} size={24}/>
                 {fave}
-                <Trash3 className="use-cursor" onClick={deleteHandler} size={24}/>
+                <Trash3 alt="Delete" title="Delete" className="use-cursor" onClick={deleteHandler} size={24}/>
             </Stack>
         </Stack>
     )

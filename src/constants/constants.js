@@ -134,31 +134,36 @@ export const grids = [
         width: 5,
         height: 3,
         column: 4,
-        row: 4
+        row: 4,
+        threshold: 8
     },
     {
         width: 7,
         height: 5,
         column: 3,
-        row: 3
+        row: 3,
+        threshold: 19
     },
     {
         width: 9,
         height: 7,
         column: 2,
-        row: 2
+        row: 2,
+        threshold: 29
     },
     {
         width: 11,
         height: 9,
         column: 1,
-        row: 1
+        row: 1,
+        threshold: 49
     },
     {
         width: 13,
         height: 11,
         column: 0,
-        row: 0
+        row: 0,
+        threshold: 83
     }
 ]
 
@@ -166,407 +171,418 @@ export const walks = [
     [
         { // 1
             column: 6,
-            row: 5
+            row: 5,
+            grid: 0
         },
         { // 2
             column: 7,
-            row: 5
+            row: 5,
+            grid: 0
         },
         { // 3
             column: 8,
-            row: 5
+            row: 5,
+            grid: 0
         },
         { // 4
             column: 6,
-            row: 6
+            row: 6,
+            grid: 0
         },
-        // { // 5
-        //     column: 7,
-        //     row: 6
-        // },
-        { // 6
+        { // 5
             column: 6,
-            row: 4
+            row: 4,
+            grid: 0
+        },
+        { // 6
+            column: 7,
+            row: 4,
+            grid: 0
         },
         { // 7
             column: 5,
-            row: 4
+            row: 5,
+            grid: 0
         },
         { // 8
             column: 4,
-            row: 4
+            row: 5,
+            grid: 0
         },
         { // 9
-            column: 4,
-            row: 5
+            column: 3,
+            row: 6,
+            grid: 1
         },
         { // 10
-            column: 3,
-            row: 5
+            column: 4,
+            row: 6,
+            grid: 1
         },
         { // 11
-            column: 3,
-            row: 6
+            column: 5,
+            row: 6,
+            grid: 1
         },
         { // 12
-            column: 4,
-            row: 6
+            column: 6,
+            row: 3,
+            grid: 1
         },
         { // 13
-            column: 5,
-            row: 6
+            column: 7,
+            row: 3,
+            grid: 1
         },
         { // 14
-            column: 6,
-            row: 3
+            column: 8,
+            row: 3,
+            grid: 1
         },
         { // 15
-            column: 7,
-            row: 3
+            column: 8,
+            row: 4,
+            grid: 1
         },
         { // 16
-            column: 8,
-            row: 3
+            column: 9,
+            row: 4,
+            grid: 1
         },
         { // 17
-            column: 8,
-            row: 4
+            column: 9,
+            row: 5,
+            grid: 1
         },
         { // 18
-            column: 9,
-            row: 4
+            column: 8,
+            row: 6,
+            grid: 1
         },
         { // 19
-            column: 9,
-            row: 5
+            column: 5,
+            row: 7,
+            grid: 1
         },
         { // 20
-            column: 8,
-            row: 6
+            column: 5,
+            row: 8,
+            grid: 2
         },
-        // { // 21
-        //     column: 8,
-        //     row: 7
-        // },
+        { // 21
+            column: 6,
+            row: 8,
+            grid: 2
+        },
         { // 22
-            column: 4,
-            row: 3
+            column: 7,
+            row: 8,
+            grid: 2
         },
         { // 23
-            column: 3,
-            row: 3
+            column: 6,
+            row: 2,
+            grid: 2
         },
         { // 24
-            column: 2,
-            row: 3
+            column: 7,
+            row: 2,
+            grid: 2
         },
-        // { // 25
-        //     column: 3,
-        //     row: 7
-        // },
+        { // 25
+            column: 8,
+            row: 2,
+            grid: 2
+        },
         { // 26
-            column: 4,
-            row: 7
+            column: 10,
+            row: 5,
+            grid: 2
         },
         { // 27
-            column: 5,
-            row: 7
+            column: 10,
+            row: 6,
+            grid: 2
         },
         { // 28
             column: 5,
-            row: 8
+            row: 2,
+            grid: 2
         },
         { // 29
-            column: 6,
-            row: 8
+            column: 4,
+            row: 2,
+            grid: 2
         },
         { // 30
-            column: 7,
-            row: 8
+            column: 5,
+            row: 1,
+            grid: 3
         },
         { // 31
-            column: 6,
-            row: 2
+            column: 4,
+            row: 1,
+            grid: 3
         },
         { // 32
-            column: 7,
-            row: 2
+            column: 2,
+            row: 7,
+            grid: 3
         },
         { // 33
-            column: 8,
-            row: 2
+            column: 10,
+            row: 4,
+            grid: 3
         },
         { // 34
             column: 10,
-            row: 5
+            row: 3,
+            grid: 3
         },
         { // 35
             column: 10,
-            row: 6
+            row: 2,
+            grid: 3
         },
-        // { // 36
-        //     column: 10,
-        //     row: 7
-        // },
-        // { // 37
-        //     column: 9,
-        //     row: 7
-        // },
-        // { // 38
-        //     column: 9,
-        //     row: 8
-        // },
-        { // 39
+        { // 36
+            column: 11,
+            row: 2,
+            grid: 3
+        },
+        { // 37
             column: 4,
-            row: 2
+            row: 9,
+            grid: 3
+        },
+        { // 38
+            column: 5,
+            row: 9,
+            grid: 3
+        },
+        { // 39
+            column: 6,
+            row: 9,
+            grid: 3
         },
         { // 40
-            column: 5,
-            row: 2
+            column: 11,
+            row: 7,
+            grid: 3
         },
         { // 41
-            column: 5,
-            row: 1
+            column: 10,
+            row: 7,
+            grid: 3
         },
         { // 42
-            column: 4,
-            row: 1
+            column: 9,
+            row: 7,
+            grid: 3
         },
         { // 43
-            column: 3,
-            row: 1
+            column: 8,
+            row: 7,
+            grid: 3
         },
         { // 44
-            column: 2,
-            row: 1
+            column: 4,
+            row: 3,
+            grid: 3
         },
         { // 45
-            column: 2,
-            row: 7
+            column: 3,
+            row: 3,
+            grid: 3
         },
-        // { // 46
-        //     column: 2,
-        //     row: 8
-        // },
-        // { // 47
-        //     column: 2,
-        //     row: 9
-        // },
-        // { // 48
-        //     column: 1,
-        //     row: 9
-        // },
+        { // 46
+            column: 2,
+            row: 5,
+            grid: 3
+        },
+        { // 47
+            column: 1,
+            row: 5,
+            grid: 3
+        },
+        { // 48
+            column: 2,
+            row: 6,
+            grid: 3
+        },
         { // 49
-            column: 10,
-            row: 4
+            column: 1,
+            row: 6,
+            grid: 3
         },
         { // 50
-            column: 10,
-            row: 3
+            column: 0,
+            row: 6,
+            grid: 4
         },
         { // 51
-            column: 10,
-            row: 2
+            column: 0,
+            row: 5,
+            grid: 4
         },
         { // 52
-            column: 11,
-            row: 2
+            column: 0,
+            row: 4,
+            grid: 4
         },
         { // 53
-            column: 4,
-            row: 9
+            column: 5,
+            row: 0,
+            grid: 4
         },
         { // 54
-            column: 5,
-            row: 9
+            column: 4,
+            row: 0,
+            grid: 4
         },
         { // 55
-            column: 6,
-            row: 9
+            column: 3,
+            row: 0,
+            grid: 4
         },
         { // 56
-            column: 11,
-            row: 7
+            column: 7,
+            row: 1,
+            grid: 4
         },
-        // { // 57
-        //     column: 11,
-        //     row: 8
-        // },
+        { // 57
+            column: 7,
+            row: 0,
+            grid: 4
+        },
         { // 58
-            column: 9,
-            row: 9
+            column: 8,
+            row: 0,
+            grid: 4
         },
         { // 59
-            column: 8,
-            row: 9
+            column: 9,
+            row: 0,
+            grid: 4
         },
         { // 60
-            column: 1,
-            row: 3
+            column: 10,
+            row: 0,
+            grid: 4
         },
         { // 61
-            column: 1,
-            row: 4
+            column: 10,
+            row: 1,
+            grid: 4
         },
         { // 62
-            column: 1,
-            row: 5
+            column: 9,
+            row: 1,
+            grid: 4
         },
         { // 63
-            column: 2,
-            row: 5
+            column: 11,
+            row: 5,
+            grid: 4
         },
         { // 64
-            column: 2,
-            row: 6
+            column: 11,
+            row: 4,
+            grid: 4
         },
         { // 65
-            column: 1,
-            row: 6
+            column: 12,
+            row: 4,
+            grid: 4
         },
         { // 66
-            column: 0,
-            row: 6
+            column: 12,
+            row: 3,
+            grid: 4
         },
         { // 67
-            column: 0,
-            row: 5
+            column: 12,
+            row: 2,
+            grid: 4
         },
         { // 68
-            column: 0,
-            row: 4
+            column: 12,
+            row: 7,
+            grid: 4
         },
         { // 69
-            column: 5,
-            row: 0
+            column: 7,
+            row: 10,
+            grid: 4
         },
         { // 70
-            column: 4,
-            row: 0
+            column: 8,
+            row: 10,
+            grid: 4
         },
         { // 71
-            column: 3,
-            row: 0
+            column: 9,
+            row: 10,
+            grid: 4
         },
         { // 72
-            column: 2,
-            row: 0
+            column: 5,
+            row: 10,
+            grid: 4
         },
         { // 73
-            column: 7,
-            row: 1
+            column: 4,
+            row: 10,
+            grid: 4
         },
         { // 74
-            column: 7,
-            row: 0
+            column: 3,
+            row: 10,
+            grid: 4
         },
         { // 75
-            column: 8,
-            row: 0
+            column: 11,
+            row: 1,
+            grid: 4
         },
         { // 76
-            column: 9,
-            row: 0
+            column: 11,
+            row: 0,
+            grid: 4
         },
         { // 77
-            column: 10,
-            row: 0
+            column: 12,
+            row: 0,
+            grid: 4
         },
         { // 78
-            column: 10,
-            row: 1
+            column: 2,
+            row: 2,
+            grid: 4
         },
         { // 79
-            column: 9,
-            row: 1
+            column: 1,
+            row: 2,
+            grid: 4
         },
         { // 80
-            column: 11,
-            row: 5
+            column: 0,
+            row: 2,
+            grid: 4
         },
         { // 81
-            column: 11,
-            row: 4
+            column: 1,
+            row: 3,
+            grid: 4
         },
         { // 82
-            column: 12,
-            row: 4
+            column: 3,
+            row: 9,
+            grid: 4
         },
         { // 83
-            column: 12,
-            row: 3
-        },
-        { // 84
-            column: 12,
-            row: 2
-        },
-        { // 85
-            column: 12,
-            row: 7
-        },
-        // { // 86
-        //     column: 12,
-        //     row: 8
-        // },
-        { // 87
-            column: 8,
-            row: 10
-        },
-        { // 88
-            column: 9,
-            row: 10
-        },
-        { // 89
-            column: 10,
-            row: 10
-        },
-        { // 90
-            column: 5,
-            row: 10
-        },
-        { // 91
-            column: 4,
-            row: 10
-        },
-        { // 92
             column: 3,
-            row: 10
-        },
-        { // 93
-            column: 1,
-            row: 8
-        },
-        { // 94
-            column: 0,
-            row: 8
-        },
-        // { // 95
-        //     column: 0,
-        //     row: 9
-        // },
-        { // 96
-            column: 11,
-            row: 1
-        },
-        { // 97
-            column: 11,
-            row: 0
-        },
-        { // 98
-            column: 12,
-            row: 0
-        },
-        { // 99
-            column: 2,
-            row: 2
-        },
-        { // 100
-            column: 1,
-            row: 2
-        },
-        { // 101
-            column: 0,
-            row: 2
+            row: 8,
+            grid: 4
         }
     ]
 ]

@@ -11,21 +11,33 @@ import { toPng } from 'html-to-image'
 import { useCallback, useRef } from "react";
 import { colours } from './../../constants/constants';
 import { signOut, signInWithEmailAndPassword } from "firebase/auth";
+import LibraryOn from "../campaign/LibraryOn";
 
 import { SortOrder, SortBy } from './../../constants/constants';
 
 // bootstrap
-import { Button, Form, Container, Row, Col, Card, Stack } from "react-bootstrap";
+import { Button, Form, FormGroup, Container, Row, Col, Card, Stack } from "react-bootstrap";
 
 const Admin = () => {
 
-    const [posts, deletePost,, updateFavourite, setShowModal, setModalContents, setModalPromise, alert, auth] = useOutletContext();
+    const [, posts, deletePost,, updateFavourite, setShowModal, setModalContents, setModalPromise, alert, auth] = useOutletContext();
     const [dateSortOrder, setDateSortOrder] = useState(SortOrder.ASCENDING);
     const [nameSortOrder, setNameSortOrder] = useState(SortOrder.ASCENDING);
     const [sortBy, setSortBy] = useState(SortBy.NAME);
     const [email, setEmail ] = useState('');
     const [password, setPassword ] = useState('');
     const [error, setError ] = useState('');
+
+    const [wall, setWall] = useState(30);
+    const [app, setApp] = useState(15);
+
+    const changeWallRange = (e) => {
+        setWall(e.target.value);
+    }
+
+    const changeAppRange = (e) => {
+        setApp(e.target.value);
+    }
 
     const ref = useRef(null);
 
@@ -179,26 +191,91 @@ const Admin = () => {
 
     const sort = <Stack direction="horizontal" gap={2}>
         {dateSortOrder === SortOrder.ASCENDING ?
-            <SortNumericUp className={`sort use-cursor ${sortBy === SortBy.DATE ? '':'disabled'}`} onClick={dateUpHandler} size={32}/>:
-            <SortNumericDown className={`sort use-cursor ${sortBy === SortBy.DATE ? '':'disabled'}`} onClick={dateDownHandler} size={32}/>}
+            <SortNumericUp alt="Sort by latest" title="Sort by latest" className={`sort use-cursor ${sortBy === SortBy.DATE ? '':'disabled'}`} onClick={dateUpHandler} size={32}/>:
+            <SortNumericDown alt="Sort by oldest" title="Sort by oldest" className={`sort use-cursor ${sortBy === SortBy.DATE ? '':'disabled'}`} onClick={dateDownHandler} size={32}/>}
         {nameSortOrder === SortOrder.ASCENDING ?
-            <SortAlphaUp className={`sort use-cursor ${sortBy === SortBy.NAME ? '':'disabled'}`} onClick={alphaUpHandler} size={32}/>:
-            <SortAlphaDown className={`sort use-cursor ${sortBy === SortBy.NAME ? '':'disabled'}`} onClick={alphaDownHandler} size={32}/>}
+            <SortAlphaUp alt="Sort Z-A" title="Sort Z-A" className={`sort use-cursor ${sortBy === SortBy.NAME ? '':'disabled'}`} onClick={alphaUpHandler} size={32}/>:
+            <SortAlphaDown alt="Sort A-Z" title="Sort A-Z" className={`sort use-cursor ${sortBy === SortBy.NAME ? '':'disabled'}`} onClick={alphaDownHandler} size={32}/>}
         {sortBy === SortBy.FAVOURITE ?
-            <HeartFill className={`sort use-cursor`} onClick={favouriteHandler} size={32}/>:
-            <Heart className={`sort use-cursor disabled`} onClick={favouriteHandler} size={32}/>}
-            <DatabaseDown className={`sort use-cursor`} onClick={downloadDatabaseHandler} size={32}/>
-            <DatabaseX className={`sort use-cursor danger`} onClick={dumpDatabaseHandler} size={32}/>
-            <PersonCircle className={`sort use-cursor`} onClick={signOutHandler} size={32}/>
+            <HeartFill alt="Filter off" title="Filter off" className={`sort use-cursor`} onClick={favouriteHandler} size={32}/>:
+            <Heart alt="Filter favourites" title="Filter favourites" className={`sort use-cursor disabled`} onClick={favouriteHandler} size={32}/>}
+        </Stack>
+
+    const funcs = <Stack direction="horizontal" gap={2}>
+            <DatabaseDown alt="Download all" title="Download all" className={`sort use-cursor`} onClick={downloadDatabaseHandler} size={32}/>
+            <DatabaseX alt="Delete all" title="Delete all" className={`sort use-cursor danger`} onClick={dumpDatabaseHandler} size={32}/>
+            <PersonCircle alt="Logout" title="Logout" className={`sort use-cursor`} onClick={signOutHandler} size={32}/>
             {/* <EmojiSmile className={`sort use-cursor`} onClick={devHandler} size={32}/> */}
         </Stack>
+
+    const minGridSize = <FormGroup controlId="wall">
+                    <Form.Label>Minimum wall size</Form.Label>
+                    <Form.Select aria-label="minimum grid size">
+                        <option>Select</option>
+                        <option value="1">5 x 3</option>
+                        <option value="2">7 x 5</option>
+                        <option value="3">9 x 7</option>
+                        <option value="3">11 x 9</option>
+                        <option value="3">13 x 11</option>
+                    </Form.Select>
+                </FormGroup>
+
+    const maxGridSize = <FormGroup controlId="wall">
+                    <Form.Label>Maximum wall size</Form.Label>
+                    <Form.Select aria-label="maximum grid size">
+                        <option>Select</option>
+                        <option value="1">5 x 3</option>
+                        <option value="2">7 x 5</option>
+                        <option value="3">9 x 7</option>
+                        <option value="3">11 x 9</option>
+                        <option value="3">13 x 11</option>
+                    </Form.Select>
+                </FormGroup>
+
+    const wallTimeout = <FormGroup controlId="wall">
+            <Form.Label>Wall timeout: {wall} mins</Form.Label>
+            <Form.Range step="5" min="5" max="60" onChange={changeWallRange} value={wall}/>
+        </FormGroup>
+    const appTimeout = <FormGroup controlId="wall">
+            <Form.Label>App timeout: {app} mins</Form.Label>
+            <Form.Range step="5" min="5" max="60" onChange={changeAppRange} value={app}/>
+        </FormGroup>
 
     const allPosts = sorted.map((post)=><AdminItem downloadPost={downloadPosthandler} key={post.id} updateFavourite={updateFavourite} delete={deletePost} post={post}/>)
 
     const err = allPosts.length > 0 ? '' : <span>No posts to show</span>
     const network = error ? <Card.Text className="text-capitalize text-danger mt-3">{error}</Card.Text> : '';
 
-    const main = <Card className="admin">
+    const title = <Card className="admin title mb-3">
+                    <Card.Header>
+                        <Stack className="justify-content-between" direction="horizontal">
+                            <Stack className="justify-content-between" gap={3} direction="horizontal">
+                                <div><LibraryOn context="admin"/></div>
+                                <div>Admin v0.1</div>
+                            </Stack>
+                            {auth?.currentUser ? funcs : ""}
+                        </Stack>
+                    </Card.Header>
+                </Card>
+
+    const main = <div>
+                {title}
+                <Card className="admin mb-3">
+                    <Card.Header>
+                        <Stack className="justify-content-between" direction="horizontal">
+                            <span>Settings</span>
+                        </Stack>
+                    </Card.Header>
+                    <Card.Body>
+                        <Stack className="justify-content-between" direction="horizontal" gap={3}>
+                            {minGridSize}
+                            {maxGridSize}
+                            {wallTimeout}
+                            {appTimeout}
+                        </Stack>
+                    </Card.Body>
+                </Card>
+                <Card className="admin">
                     <Card.Header>
                         <Stack className="justify-content-between" direction="horizontal">
                             <span>Posts</span>
@@ -212,8 +289,11 @@ const Admin = () => {
                         </Stack>
                     </Card.Body>
                 </Card>
+            </div>
 
-    const login = <Card>
+    const login = <div>
+                {title}
+                <Card>
                     <Card.Header>
                         Login
                     </Card.Header>
@@ -238,6 +318,7 @@ const Admin = () => {
                         </Form>
                     </Card.Body>
                 </Card>
+            </div>
 
     return <Container fluid>
             <Row className="mt-3">

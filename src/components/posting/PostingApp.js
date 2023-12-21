@@ -9,6 +9,26 @@ import { useOutletContext } from "react-router-dom";
 
 // components
 import Post from "../wall/Post";
+import LibraryOn from "../campaign/LibraryOn"
+import About from "../campaign/About";
+import Join from "../campaign/Join";
+import ArtsCouncil from "../campaign/ArtsCouncil";
+import Bhcc from "../campaign/Bhcc";
+import Submit from "./Submit";
+import Next from "./Next";
+import Previous from "./Previous";
+
+import {
+	RegExpMatcher,
+	TextCensor,
+	englishDataset,
+	englishRecommendedTransformers,
+} from 'obscenity';
+
+const matcher = new RegExpMatcher({
+	...englishDataset.build(),
+	...englishRecommendedTransformers,
+})
 
 const PostingApp = () => {
 
@@ -18,10 +38,11 @@ const PostingApp = () => {
     const [ textColour, setTextColour ] = useState(0);
     const [ backgroundColour, setBackgroundColour ] = useState(1);
     const [ borderColour, setBorderColour ] = useState(2);
+    const [ idle, setIdle ] = useState(true);
 
     const ref = useRef(null);
 
-    const [,, savePost,, setShowModal, setModalContents, setModalPromise] = useOutletContext();
+    const [,,, savePost,, setShowModal, setModalContents, setModalPromise,,, confirmation, setConfirmation] = useOutletContext();
 
     const [index, setIndex] = useState(0);
     const handleSelect = (selectedIndex, e) => {
@@ -30,6 +51,18 @@ const PostingApp = () => {
 
     const saveHandler = (event) => {
         event.preventDefault();
+        if(matcher.hasMatch(message)){
+            setShowModal(true);
+            setModalContents({
+                customClass: "posting",
+                title: "Profanity found",
+                body: <span>Whoa! You need to change that.</span>,
+                reject: null,
+                resolve: "Ok"
+            })
+            setModalPromise(null);
+            return;
+        }
         savePost({
             message: message,
             font: font,
@@ -50,8 +83,8 @@ const PostingApp = () => {
             return array;
         }
 
-        // background and border colour should not be black
-        let colours = [0, 1, 2, 3, 4, 6];
+        // background and border colour should not be black or white
+        let colours = [0, 1, 2, 3, 4];
         colours = shuffleArray(colours);
         setBackgroundColour(colours.pop());
         setBorderColour(colours.pop());
@@ -121,6 +154,7 @@ const PostingApp = () => {
     }
     const selectBackgroundColour = colours.map((colour, i) => {
         if(colour.value === 5) return;
+        if(colour.value === 6) return;
         if(colour.value === borderColour) return;
         if(colour.value === textColour) return;
         const colourStyle = { borderColor: colour.borderColor, backgroundColor: colour.hex}
@@ -167,7 +201,7 @@ const PostingApp = () => {
         setTextColour(index);
     }
     const selectTextColour = colours.map((colour, i) => {
-        if(colour.value === borderColour) return;
+        // if(colour.value === borderColour) return;
         if(colour.value === backgroundColour) return;
         const colourStyle = { borderColor: colour.borderColor, backgroundColor: colour.hex}
         const key = `colour-${colour.label.slice(0, 3)}-${colour.value}`;
@@ -182,54 +216,39 @@ const PostingApp = () => {
         ref.current.focus();
     }
 
-    // const form =
-    //     <Form onSubmit={saveHandler}>
-    //         <Form.Group className="mb-3" controlId="message">
-    //             <Form.Label>Message</Form.Label>
-    //             <Form.Control onChange={changeMessage} value={message} type="text"/>
-    //         </Form.Group>
-    //         <Form.Group className="mb-3" controlId="font">
-    //             <Form.Label>Font</Form.Label>
-    //             <Form.Select onChange={changeFont} value={font}>
-    //                 {selectFont}
-    //             </Form.Select>
-    //         </Form.Group>
-    //         <Form.Group className="mb-3" value={1} controlId="shape">
-    //             <Form.Label>Shape</Form.Label>
-    //             <Stack direction="horizontal" gap={3}>
-    //                 {selectShape}
-    //             </Stack>
-    //         </Form.Group>
-    //         <Form.Group className="mb-3" controlId="textColour">
-    //             <Form.Label>Text colour</Form.Label>
-    //             <Stack direction="horizontal" gap={3}>
-    //                 {selectTextColour}
-    //             </Stack>
-    //         </Form.Group>
-    //         <Form.Group className="mb-3" controlId="backgroundColour">
-    //             <Form.Label>Background colour</Form.Label>
-    //             <Stack direction="horizontal" gap={3}>
-    //                 {selectBackgroundColour}
-    //             </Stack>
-    //         </Form.Group>
-    //         <Form.Group className="mb-3" controlId="borderColour">
-    //             <Form.Label>Border colour</Form.Label>
-    //             <Stack direction="horizontal" gap={3}>
-    //                 {selectBorderColour}
-    //             </Stack>
-    //         </Form.Group>
-    //         <Stack direction="horizontal" gap={2}>
-    //             <Button variant="primary" type="submit">Save</Button>
-    //             <Button variant="secondary" onClick={rand}>Rand</Button>
-    //         </Stack>
-    //     </Form>
+    const dismissKeyboard = (e) => {
+        if (e.key === 'Enter') {
+           e.target.blur();
+        }
+    }
+
+    const reset = () => {
+        // setIndex(0);
+        setConfirmation(false);
+        // setIdle(true);
+        setFont(0);
+        setShape(0);
+        setTextColour(0);
+        setBackgroundColour(1);
+        setBorderColour(2);
+        setMessage("Type your message here");
+    }
+
+    const dismissIdle = () => {
+        setIdle(false);
+    }
+
+    const dismissConfirmation = () => {
+        reset();
+    }
+
 
         const data = [
             {
                 jsx: <Form.Group className="h-100" controlId="shape">
                         <Stack className="h-100 justify-content-evenly" direction="vertical">
                             <Form.Label><span className="sohne-leicht">Step one</span><br/>Choose a shape</Form.Label>
-                            <Stack direction="horizontal" gap={4}>
+                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
                                 {selectShape}
                             </Stack>
                         </Stack>
@@ -269,7 +288,7 @@ const PostingApp = () => {
                 jsx: <Form.Group className="h-100" controlId="font">
                         <Stack className="h-100 justify-content-evenly" direction="vertical">
                             <Form.Label><span className="sohne-leicht">Step five</span><br/>Choose a font for your message</Form.Label>
-                            <Stack direction="horizontal" gap={4}>
+                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
                                 {selectFont}
                             </Stack>
                         </Stack>
@@ -280,17 +299,36 @@ const PostingApp = () => {
                         <Stack className="h-100 justify-content-evenly" direction="vertical">
                             <Form.Label>Submit your message</Form.Label>
                             <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                <Button variant="primary" type="submit">Save</Button>
-                                <Button variant="secondary" onClick={rand}>Rand</Button>
+                                <button className="submit-button" type="submit"><Submit context="app"/></button>
+                                {/* <Button variant="secondary" onClick={rand}>Rand</Button> */}
                             </Stack>
                         </Stack>
                     </Form.Group>
             }
         ]
 
-        return <main className="container-lg" id="posting-app">
+        const idleScreen = <main className="container-fluid" id="posting-app-idle">
+            <section onClick={dismissIdle}>
+                <LibraryOn context="idle"/>
+                <About context="idle"/>
+                <span>Tap to begin</span>
+                {/* <Button variant="primary" onClick={dismissIdle}>Continue</Button> */}
+            </section>
+        </main>
+
+        const confirmationScreen = <main className="container-fluid" id="posting-app-confirmation">
+            <section onClick={dismissConfirmation}>
+                <LibraryOn context="confirmation"/>
+                <span>Thanks!</span>
+                <Join context="confirmation"/>
+                {/* <Button variant="primary" onClick={dismissConfirmation}>Continue</Button> */}
+            </section>
+        </main>
+
+        const main = <main className="container-lg" id="posting-app">
             <header>
-                <div>header</div>
+                <About context="header"/>
+                {/* <LibraryOn context="header"/> */}
             </header>
             <div id="contents">
 
@@ -302,11 +340,13 @@ const PostingApp = () => {
 
                     <Form className="w-100 h-100" onSubmit={saveHandler}>
 
+                        <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
+
                         <Form.Group controlId="message">
-                            <Form.Control ref={ref} onChange={changeMessage} value={message} type="text"/>
+                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
                         </Form.Group>
 
-                        <Carousel wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        <Carousel nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
                             {data.map((slide, i) => {
                                 return (
                                     <Carousel.Item key={`slide-${i}`}>
@@ -321,10 +361,16 @@ const PostingApp = () => {
 
                 </section>
             </div>
-            <footer>
-                <div>footer</div>
+            <footer onClick={rand}>
+                <LibraryOn context="footer"/>
+                <ArtsCouncil context="footer"/>
+                <Bhcc context="footer"/>
             </footer>
         </main>
+
+        if(idle) return idleScreen;
+        // if(confirmation) return confirmationScreen;
+        return main;
 }
 
 export default PostingApp;

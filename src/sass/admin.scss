@@ -22,4 +22,15 @@
       }
     }
   }
+  &.title {
+    border-bottom: none;
+    font-size: 1.25rem;
+    .library-on.admin {
+      background-image: url('./../media/svg/library_on_black.svg');
+      height: 2rem;
+      width: 8rem;
+    }
+  }
+  // input.form-range {
+  // }
 }

@@ -1,7 +1,8 @@
 // components
 import Post from "../wall/Post";
-import Cta from "./Cta";
-import Logos from "./Logos";
+import Join from "../campaign/Join";
+import Tagline from "../campaign/Tagline";
+import CompositeLogo from "../campaign/CompositeLogo";
 
 // app
 import { useOutletContext } from "react-router-dom";
@@ -24,15 +25,17 @@ function toggleFullScreen() {
 
 const Wall = () => {
 
-    const [posts,,,,,,,,,grid] = useOutletContext();
+    const [posts,,,,,,,,,,] = useOutletContext();
 
     let sorted = posts.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
     // sorted = sorted.splice(0, 2); // dev
-    
+
     let wallPosts = sorted.map((post, i) => {
-        const wallPost = <Post key={`post-${grid}-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
+        const wallPost = <Post key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
         return wallPost;
     })
+
+    const grid = (walks[0][wallPosts.length - 1])?.grid || 0;
 
     const gridWidth = grids[grid].width;
     const gridHeight = grids[grid].height;
@@ -44,6 +47,7 @@ const Wall = () => {
         }
         let anim = "";
         if(i === wallPosts.length - 1) {
+            // console.log(walks[0][i].column, walks[0][i].row);
             if(Math.random() < .5){
                 anim = "wobble";
             } else {
@@ -75,8 +79,9 @@ const Wall = () => {
         <div style={gridStyle} className="grid">
             {containers}
         </div>
-        <Cta context="wall"/>
-        <Logos context="wall"/>
+        <Tagline context="wall"/>
+        <Join context="wall"/>
+        <CompositeLogo context="wall"/>
     </div>
 }
 

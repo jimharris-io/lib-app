@@ -1,56 +1,5 @@
 $box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
 
-.colour-swatch {
-  display: inline-block;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 2rem;
-  border: 1px solid;
-  &.checked {
-    box-shadow: $box-shadow;
-  }
-  &.unavailable {
-    opacity: .25;
-  }
-}
-
-.font-select {
-  padding: 1rem 0;
-  opacity: .34;
-  font-size: 2rem;
-  &.checked {
-    opacity: 1;
-  }
-}
-
-.shape {
-  width: 5.5rem;
-  height: 5.5rem;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-input[id="message"] {
-  opacity: 0;
-  position: fixed;
-}
-
-input[type="radio"] {
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-label {
-  width: 100%;
-  text-align: center;
-  font-family: "Söhne Halbfett", serif;
-  font-size: 1.5rem;
-  pointer-events: none;
-}
-
 // modal
 
 .modal-dialog.posting {
@@ -82,13 +31,207 @@ label {
   }
 }
 
-// temp fix
+// campaign
 
-.font-select .font-label.typeface-2 {
-  position: relative;
-  top: -3px;
+.library-on {
+  background-image: url('./../media/svg/library_on.svg');
+}
+.arts-council {
+  background-image: url('./../media/svg/arts_council.svg');
+}
+.bhcc {
+  background-image: url('./../media/svg/bhcc.svg');
 }
 
+.library-on, .arts-council, .bhcc {
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.about, .join {
+  color: white;
+}
+
+main#posting-app {
+  header {
+    .header.about {
+      font-family: "Söhne Halbfett";
+      margin: 0 2rem;
+      font-size: 2.75vw;
+      text-align: center;
+    }
+    // .header.library-on {
+    //   height: 100%;
+    //   width: 30%;
+    //   padding: 1rem 0;
+    //   background-origin: content-box;
+    //   background-position-x: right;
+    // }
+  }
+  footer {
+    .footer {
+      &.library-on, &.arts-council, &.bhcc {
+        height: 100%;
+        width: calc(100% / 3);
+        background-origin: content-box;
+      }
+      &.library-on {
+        background-position-x: left;
+        padding: 2.25rem 0;
+      }
+      &.arts-council {
+        background-position-x: center;
+      }
+      &.bhcc {
+        background-position-x: right;
+        padding: 0.5rem 0;
+      }
+    }
+  }
+}
+
+// steps
+main#posting-app {
+  .colour-swatch {
+    display: inline-block;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 2rem;
+    border: 1px solid;
+    &.checked {
+      box-shadow: $box-shadow;
+    }
+    &.unavailable {
+      opacity: .25;
+    }
+  }
+  // temp fix
+  .font-select .font-label.typeface-2 {
+    position: relative;
+    top: -3px;
+  }
+  .font-select {
+    padding: 1rem 0;
+    opacity: .34;
+    font-size: 2rem;
+    &.checked {
+      opacity: 1;
+    }
+  }
+  .shape {
+    width: 5.5rem;
+    height: 5.5rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  input[id="message"] {
+    opacity: 0;
+    position: fixed;
+  }
+  input[type="radio"] {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  label {
+    width: 67vw;
+    text-align: center;
+    font-family: "Söhne Halbfett", serif;
+    font-size: 1.5rem;
+    pointer-events: none;
+  }
+  .carousel-control-prev, .carousel-control-next {
+    height: 6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1 !important;
+  }
+  .app.next, .app.previous {
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% 100%;
+  }
+  .app.next {
+    background-image: url('./../media/png/next.png');
+  }
+  .app.previous {
+    background-image: url('./../media/png/previous.png');
+  }
+  .submit-button {
+    background-color: black; /* Green */
+    border: none;
+    color: rgba(0, 0, 0, 0);
+    text-align: center;
+    text-decoration: none;
+    .app.submit {
+      background-image: url('./../media/png/submit.png');
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      height: 6rem;
+      width: 12rem;
+    }
+  }
+}
+
+// screens
+
+main#posting-app {
+  &-idle, &-confirmation {
+    height: 100%;
+    section {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+  }
+  &-idle {
+    span {
+      color: white;
+      font-family: 'Söhne Leicht';
+      font-size: 2vh;
+      opacity: .75;
+    }
+    .idle {
+      &.about {
+        width: 67vw;
+        text-align: center;
+        font-size: 1.75vh;
+      }
+      &.library-on {
+        width: 30vw;
+        height: 10vw;
+      }
+    }
+  }
+  &-confirmation {
+    span {
+      color: white;
+      font-family: "Söhne Halbfett";
+      font-size: 4vh;
+    }
+    .confirmation {
+      &.join {
+        width: 50vw;
+        text-align: center;
+        font-size: 1.75vh;
+
+      }
+      &.library-on {
+        width: 30vw;
+        height: 10vw;
+      }
+    }
+  }
+}
 
 // structure
 
@@ -109,13 +252,15 @@ main#posting-app div#contents section#editor {
 }
 
 main#posting-app header {
-  background: rgba(255, 0, 0, 0.25);
+  // background: rgba(255, 0, 0, 0.25);
   min-height: 10vh;
+  justify-content: space-between;
 }
 
 main#posting-app footer {
-  background: rgba(0, 255, 0, 0.25);
+  // background: rgba(0, 255, 0, 0.25);
   min-height: 10vh;
+  justify-content: space-between;
 }
 
 main#posting-app div#contents {

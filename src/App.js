@@ -30,12 +30,15 @@ function App(props) {
   const [app, setApp] = useState();
   const [user, setUser] = useState(null);
   const [auth, setAuth] = useState(null);
-  const [posts, setPosts] =  useState([]);
+  const [adminPosts, setAdminPosts] =  useState([]);
+  const [wallPosts, setWallPosts] =  useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalPromise, setModalPromise] = useState(null);
   const [modalContents, setModalContents] = useState({});
+  const [confirmation, setConfirmation] = useState(false);
 
-  const lastGridIndex = useRef(0);
+  const [minGrid, setMinGrid] = useState(0);
+  const [maxGrid, setMaxGrid] = useState(4);
 
   // modal
 
@@ -74,13 +77,21 @@ function App(props) {
       // }
     });
     let unsubscribe = onSnapshot(collection(getFirestore(app), "posts"), (snapshot)=>{
+      // for admin
       const posts = snapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-      setPosts(posts);
+      setAdminPosts(posts);
+      // for wall
+      let sorted = posts.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
+      const threshold = grids[maxGrid].threshold// threshold is always length of the walk but the walk can't exceed the grid
+      const chunked = sorted.map((e, i) => i % threshold ? null : sorted.slice(i, i + threshold))
+        .filter(e => e)
+        .pop() || [];
+      setWallPosts(chunked);
     })
     return () => {
       unsubscribe();
     }
-  }, [app])
+  }, [app, maxGrid, grids])
 
   const deletePost = async (id) => {
     await deleteDoc(doc(getFirestore(app), "posts", id));
@@ -102,38 +113,17 @@ function App(props) {
       borderColour: data.borderColour,
       created: new Date(),
       favourite: false
-    });
+    }).then(()=>{
+      setConfirmation(true);
+    })
   }
 
   const adjAlert = props.showAlert ? {marginTop: "4rem"} : null;
 
-  const getGridIndex = (grids, lastStep, lastGridIndex) => {
-    let gridIndex = 0;
-    if(lastStep){
-      for(let g = 0; g < grids.length; g++){
-        
-        if((lastStep.row < (grids[g].row + grids[g].height))
-          && (lastStep.row >= (grids[g].row))
-          && (lastStep.column < (grids[g].column + grids[g].width))
-          && (lastStep.column >= (grids[g].column))){
-            gridIndex = Math.max(g, lastGridIndex.current);
-            if(lastGridIndex.current < gridIndex) {
-              lastGridIndex.current = gridIndex;
-            }
-            break;
-        }
-      }
-    }
-
-    return gridIndex;
-  }
-
-  const grid = getGridIndex(grids, walks[0][posts.length - 1], lastGridIndex);
-
   return (
     <div className="h-100" style={adjAlert}>
 
-      <Outlet context={[posts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, grid]}></Outlet>
+      <Outlet context={[wallPosts, adminPosts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, confirmation, setConfirmation]}></Outlet>
       
       <Modal dialogClassName={modalContents.customClass} centered show={showModal} onHide={modalEscape}>
         <Modal.Header closeButton>

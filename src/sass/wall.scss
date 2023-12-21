@@ -1,6 +1,7 @@
 .wall {
   position: relative;
   margin: 0 auto;
+  overflow: hidden;
   .grid {
     display: grid;
     background: black;
@@ -8,12 +9,21 @@
     top: 50%;
     transform: translateY(-50%);
   }
-  &.cta, &.logos {
+  &.join, &.logos, &.tag-line {
     position: fixed;
     background-repeat: no-repeat;
     background-size: contain;
   }
-  &.cta {
+  &.tag-line {
+    color: white;
+    font-family: "Söhne Halbfett";
+    left: 2.8vw;
+    top: 7vh;
+    width: 25vw;
+    font-size: calc( 24px + (36 - 24) * (100vw - 1024px) / (1920 - 1024));
+    line-height: 1.25;
+  }
+  &.join {
     color: white;
     font-family: "Söhne Halbfett";
     left: 2.8vw;
