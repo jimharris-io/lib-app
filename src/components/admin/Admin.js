@@ -18,9 +18,9 @@ import { SortOrder, SortBy } from './../../constants/constants';
 // bootstrap
 import { Button, Form, FormGroup, Container, Row, Col, Card, Stack } from "react-bootstrap";
 
-const Admin = () => {
+const Admin = (props) => {
 
-    const [, posts, deletePost,, updateFavourite, setShowModal, setModalContents, setModalPromise, alert, auth] = useOutletContext();
+    const [, posts, deletePost,, updateFavourite, setShowModal, setModalContents, setModalPromise, alert, auth,,, minGrid, maxGrid, updateSettings] = useOutletContext();
     const [dateSortOrder, setDateSortOrder] = useState(SortOrder.ASCENDING);
     const [nameSortOrder, setNameSortOrder] = useState(SortOrder.ASCENDING);
     const [sortBy, setSortBy] = useState(SortBy.NAME);
@@ -74,6 +74,18 @@ const Admin = () => {
     const changePassword = (event) => {
         setPassword(event.target.value);
         setError('');
+    }
+
+    const changeMinGrid = (e) =>{
+        updateSettings({
+            gridMin: parseInt(e.target.value)
+        })
+    }
+
+    const changeMaxGrid = (e) =>{
+        updateSettings({
+            gridMax: parseInt(e.target.value)
+        })
     }
 
     const downloadPosthandler = useCallback((post)=>{
@@ -210,25 +222,25 @@ const Admin = () => {
 
     const minGridSize = <FormGroup controlId="wall">
                     <Form.Label>Minimum wall size</Form.Label>
-                    <Form.Select aria-label="minimum grid size">
+                    <Form.Select onChange={changeMinGrid} value={minGrid} aria-label="minimum grid size"> 
                         <option>Select</option>
-                        <option value="1">5 x 3</option>
-                        <option value="2">7 x 5</option>
-                        <option value="3">9 x 7</option>
+                        <option value="0">5 x 3</option>
+                        <option value="1">7 x 5</option>
+                        <option value="2">9 x 7</option>
                         <option value="3">11 x 9</option>
-                        <option value="3">13 x 11</option>
+                        <option value="4">13 x 11</option>  
                     </Form.Select>
                 </FormGroup>
 
     const maxGridSize = <FormGroup controlId="wall">
                     <Form.Label>Maximum wall size</Form.Label>
-                    <Form.Select aria-label="maximum grid size">
+                    <Form.Select onChange={changeMaxGrid} value={maxGrid} aria-label="maximum grid size">
                         <option>Select</option>
-                        <option value="1">5 x 3</option>
-                        <option value="2">7 x 5</option>
-                        <option value="3">9 x 7</option>
+                        <option value="0">5 x 3</option>
+                        <option value="1">7 x 5</option>
+                        <option value="2">9 x 7</option>
                         <option value="3">11 x 9</option>
-                        <option value="3">13 x 11</option>
+                        <option value="4">13 x 11</option>
                     </Form.Select>
                 </FormGroup>
 
@@ -268,7 +280,7 @@ const Admin = () => {
                     </Card.Header>
                     <Card.Body>
                         <Stack className="justify-content-between" direction="horizontal" gap={3}>
-                            {minGridSize}
+                            {/* {minGridSize} */}
                             {maxGridSize}
                             {wallTimeout}
                             {appTimeout}

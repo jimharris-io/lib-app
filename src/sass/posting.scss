@@ -14,7 +14,7 @@ $box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
       justify-content: center;
     }
     &content {
-      background-color: #111111;
+      background-color: #333333;
       color: white;
     }
     &title {
@@ -91,6 +91,33 @@ main#posting-app {
   }
 }
 
+main#posting-app, .modal {
+  .app.cancel, .app.continue, .app.ok {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% 100%;
+    cursor: pointer;
+  }
+  .app.ok {
+    width: 3rem;
+    height: 3rem;
+  }
+  .app.cancel, .app.continue {
+    width: 6rem;
+    height: 12rem;
+  }
+  .app.ok {
+    background-image: url('./../media/png/ok.png');
+  }
+  .app.continue {
+    background-image: url('./../media/png/continue.png');
+  }
+  .app.cancel {
+    background-image: url('./../media/png/cancel.png');
+  }
+}
+
 // steps
 main#posting-app {
   .colour-swatch {
@@ -136,6 +163,9 @@ main#posting-app {
     height: 100%;
     cursor: pointer;
   }
+  input[type='range'] {
+    color: red;
+  }
   label {
     width: 67vw;
     text-align: center;
@@ -149,13 +179,23 @@ main#posting-app {
     transform: translateY(-50%);
     opacity: 1 !important;
   }
-  .app.next, .app.previous {
+  .app.next, .app.previous, .app.cancel, .app.continue, .app.ok {
     display: inline-block;
-    width: 3rem;
-    height: 3rem;
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 100% 100%;
+  }
+  .app.next, .app.previous {
+    width: 3rem;
+    height: 3rem;
+  }
+  .app.ok {
+    width: 6rem;
+    height: 6rem;
+  }
+  .app.cancel, .app.continue {
+    width: 6rem;
+    height: 12rem;
   }
   .app.next {
     background-image: url('./../media/png/next.png');

@@ -17,6 +17,8 @@ import Bhcc from "../campaign/Bhcc";
 import Submit from "./Submit";
 import Next from "./Next";
 import Previous from "./Previous";
+import Ok from "./Ok";
+import Continue from "./Continue"
 
 import {
 	RegExpMatcher,
@@ -58,7 +60,8 @@ const PostingApp = () => {
                 title: "Profanity found",
                 body: <span>Whoa! You need to change that.</span>,
                 reject: null,
-                resolve: "Ok"
+                resolve: "",
+                customButton: <Ok context="app"/>
             })
             setModalPromise(null);
             return;

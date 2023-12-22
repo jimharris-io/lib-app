@@ -93,6 +93,20 @@ function App(props) {
     }
   }, [app, maxGrid, grids])
 
+  useEffect(()=>{
+    if(!app) return;
+    // await updateDoc(doc(getFirestore(app), "settings", "srGzLoFqUc3ifsS1oh98"), {
+    let unsubscribe = onSnapshot(collection(getFirestore(app), "settings"), (snapshot)=>{
+      // for admin
+      const settings = snapshot.docs.map((doc) => ({...doc.data(), id: "srGzLoFqUc3ifsS1oh98" }))[0];
+      setMinGrid(settings.gridMin);
+      setMaxGrid(settings.gridMax);
+    })
+    return () => {
+      unsubscribe();
+    }
+  }, [app, minGrid, maxGrid])
+
   const deletePost = async (id) => {
     await deleteDoc(doc(getFirestore(app), "posts", id));
   }
@@ -118,12 +132,29 @@ function App(props) {
     })
   }
 
+  const initSettings = async (data) => {
+    await updateDoc(doc(getFirestore(app), "settings", "srGzLoFqUc3ifsS1oh98"), {
+      gridMin: 0,
+      gridMax: 4,
+      wallTimeout: 30,
+      appTimeout: 15
+    })
+  }
+
+  const updateSettings = async (data) => {
+    await updateDoc(doc(getFirestore(app), "settings", "srGzLoFqUc3ifsS1oh98"), {
+      gridMin: minGrid,
+      gridMax: maxGrid,
+      ...data
+    })
+  }
+
   const adjAlert = props.showAlert ? {marginTop: "4rem"} : null;
 
   return (
     <div className="h-100" style={adjAlert}>
 
-      <Outlet context={[wallPosts, adminPosts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, confirmation, setConfirmation]}></Outlet>
+      <Outlet context={[wallPosts, adminPosts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, confirmation, setConfirmation, minGrid, maxGrid, updateSettings]}></Outlet>
       
       <Modal dialogClassName={modalContents.customClass} centered show={showModal} onHide={modalEscape}>
         <Modal.Header closeButton>
@@ -134,9 +165,11 @@ function App(props) {
           { modalContents.reject && <Button variant="secondary" onClick={modalReject}>
             {modalContents.reject}
           </Button>}
-          <Button variant="primary" onClick={modalResolve}>
-            {modalContents.resolve}
-          </Button>
+          { modalContents.customButton ? <div onClick={modalResolve}>{modalContents.customButton}</div> : 
+            <Button variant="primary" onClick={modalResolve}>
+              {modalContents.resolve}
+            </Button>
+          }
         </Modal.Footer>
       </Modal>
 
