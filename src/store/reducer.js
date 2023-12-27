@@ -4,7 +4,7 @@ const initialState = {
   showAlert: false,
   alertVariant: "",
   alertContents: "",
-  appKey: "",
+  appKey: ""
 };
 
 const reducer = (state = initialState, action) => {

@@ -129,6 +129,17 @@ export const SortBy = {
     FAVOURITE: "favourite"
 }
 
+export const Server = {
+    DEVELOPMENT: "lib-app",
+    PRODUCTION: "lib-app-production"
+}
+
+export const Internal = {
+    WAKE_WALL: "wake_wall",
+    RESET_WAKE: "reset_wake",
+    NONE: "none"
+}
+
 export const grids = [
     {
         width: 5,

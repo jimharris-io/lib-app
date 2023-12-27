@@ -5,9 +5,13 @@ import Tagline from "../campaign/Tagline";
 import CompositeLogo from "../campaign/CompositeLogo";
 
 // app
+import { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { colours, grids, walks } from './../../constants/constants';
-import { useState } from 'react';
+import { grids, walks, Internal } from './../../constants/constants';
+
+// firebase
+import { getFirestore, getDocs, writeBatch, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+
 
 document.addEventListener("keydown", (e) => {
     if (e.getModifierState && e.getModifierState("Control") && e.code === "Space") {
@@ -25,7 +29,50 @@ function toggleFullScreen() {
 
 const Wall = () => {
 
-    const [posts,,,,,,,,,,] = useOutletContext();
+    const [posts,,,,,,,,,,,,,,,,,,,, app, settingsId] = useOutletContext();
+    
+    const [idle, setIdle] = useState({value:false});
+
+    useEffect(()=>{
+        console.log("// wall: init timeout");
+        const timeout = setTimeout(()=>{
+            if(!idle.value){
+                setIdle({...{value:true}});
+                console.log("// wall: executed timeout, set idle");
+            } else {
+                console.log("// wall: executed timeout, nothing to do");
+            }
+        }, 30000)
+        return () => {
+            console.log("// wall: cleared timeout");
+            clearTimeout(timeout);
+        }
+    }, [idle])
+
+    useEffect(()=>{
+        if(!app) return;
+        // clearMessage();
+        let unsubscribe = onSnapshot(collection(getFirestore(app), "settings"), (snapshot)=>{
+            // for admin
+            const settings = snapshot.docs.map((doc) => ({...doc.data(), id: settingsId }))[0];
+            if(settings.internal === Internal.WAKE_WALL){
+                setIdle({...{value:false}});
+                const reset = async () => {
+                    await updateDoc(doc(getFirestore(app), "settings", settingsId), {
+                        internal: Internal.NONE
+                    })
+                }
+                reset();
+            }
+        })
+        return () => {
+          unsubscribe();
+        }
+      }, [app, idle, settingsId])
+
+    const wake = () => {
+        setIdle({...{value:false}});
+    }
 
     let sorted = posts.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
     // sorted = sorted.splice(0, 2); // dev
@@ -75,7 +122,9 @@ const Wall = () => {
         gridTemplateRows: `repeat(${gridHeight}, 1fr)`
     }
     
-    return <div style={wallStyle} className="wall h-100">
+    const idleMarkup = <h1 onClick={wake} style={{padding: "3rem", color: "white"}}>idle</h1>;
+
+    const wallMarkup = <div style={wallStyle} className="wall h-100">
         <div style={gridStyle} className="grid">
             {containers}
         </div>
@@ -83,6 +132,8 @@ const Wall = () => {
         <Join context="wall"/>
         <CompositeLogo context="wall"/>
     </div>
+
+    return idle.value ? idleMarkup : wallMarkup;
 }
 
 export default Wall;

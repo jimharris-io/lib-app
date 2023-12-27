@@ -9,7 +9,7 @@ import { useOutletContext } from "react-router-dom";
 import * as actionTypes from './../../store/actions';import * as htmlToImage from 'html-to-image';
 import { toPng } from 'html-to-image'
 import { useCallback, useRef } from "react";
-import { colours } from './../../constants/constants';
+import { Server } from './../../constants/constants';
 import { signOut, signInWithEmailAndPassword } from "firebase/auth";
 import LibraryOn from "../campaign/LibraryOn";
 
@@ -20,7 +20,7 @@ import { Button, Form, FormGroup, Container, Row, Col, Card, Stack } from "react
 
 const Admin = (props) => {
 
-    const [, posts, deletePost,, updateFavourite, setShowModal, setModalContents, setModalPromise, alert, auth,,, minGrid, maxGrid, updateSettings] = useOutletContext();
+    const [, posts, deletePost,, updateFavourite, setShowModal, setModalContents, setModalPromise, alert, auth,,, minGrid, maxGrid, updateSettings, server, setServer, wallTimeout, appTimeout, deleteAllPosts] = useOutletContext();
     const [dateSortOrder, setDateSortOrder] = useState(SortOrder.ASCENDING);
     const [nameSortOrder, setNameSortOrder] = useState(SortOrder.ASCENDING);
     const [sortBy, setSortBy] = useState(SortBy.NAME);
@@ -28,15 +28,16 @@ const Admin = (props) => {
     const [password, setPassword ] = useState('');
     const [error, setError ] = useState('');
 
-    const [wall, setWall] = useState(30);
-    const [app, setApp] = useState(15);
-
     const changeWallRange = (e) => {
-        setWall(e.target.value);
+        updateSettings({
+            wallTimeout: parseInt(e.target.value)
+        })
     }
 
     const changeAppRange = (e) => {
-        setApp(e.target.value);
+        updateSettings({
+            appTimeout: parseInt(e.target.value)
+        })
     }
 
     const ref = useRef(null);
@@ -69,6 +70,10 @@ const Admin = (props) => {
     const changeEmail = (event) => {
         setEmail(event.target.value);
         setError('');
+    }
+
+    const changeServer = (event) => {
+        setServer(event.target.value);
     }
 
     const changePassword = (event) => {
@@ -126,7 +131,7 @@ const Admin = (props) => {
         })
         setModalPromise({
           callback: () => {
-            console.log("// dump database");
+            deleteAllPosts();
           }
         })
     }
@@ -223,7 +228,6 @@ const Admin = (props) => {
     const minGridSize = <FormGroup controlId="wall">
                     <Form.Label>Minimum wall size</Form.Label>
                     <Form.Select onChange={changeMinGrid} value={minGrid} aria-label="minimum grid size"> 
-                        <option>Select</option>
                         <option value="0">5 x 3</option>
                         <option value="1">7 x 5</option>
                         <option value="2">9 x 7</option>
@@ -232,10 +236,17 @@ const Admin = (props) => {
                     </Form.Select>
                 </FormGroup>
 
+    const serverMarkup = <FormGroup controlId="wall">
+                    {/* <Form.Label>Server</Form.Label> */}
+                    <Form.Select onChange={changeServer} value={server} aria-label="server">
+                        <option value={Server.PRODUCTION}>Production</option>
+                        <option value={Server.DEVELOPMENT}>Development</option>
+                    </Form.Select>
+                    </FormGroup>
+
     const maxGridSize = <FormGroup controlId="wall">
                     <Form.Label>Maximum wall size</Form.Label>
                     <Form.Select onChange={changeMaxGrid} value={maxGrid} aria-label="maximum grid size">
-                        <option>Select</option>
                         <option value="0">5 x 3</option>
                         <option value="1">7 x 5</option>
                         <option value="2">9 x 7</option>
@@ -244,13 +255,14 @@ const Admin = (props) => {
                     </Form.Select>
                 </FormGroup>
 
-    const wallTimeout = <FormGroup controlId="wall">
-            <Form.Label>Wall timeout: {wall} mins</Form.Label>
-            <Form.Range step="5" min="5" max="60" onChange={changeWallRange} value={wall}/>
+    const wallTimeoutMarkup = <FormGroup controlId="wall">
+            <Form.Label>Wall timeout: {wallTimeout} mins</Form.Label>
+            <Form.Range step="5" min="5" max="60" onChange={changeWallRange} value={wallTimeout}/>
         </FormGroup>
-    const appTimeout = <FormGroup controlId="wall">
-            <Form.Label>App timeout: {app} mins</Form.Label>
-            <Form.Range step="5" min="5" max="60" onChange={changeAppRange} value={app}/>
+
+    const appTimeoutMarkup = <FormGroup controlId="wall">
+            <Form.Label>App timeout: {appTimeout} mins</Form.Label>
+            <Form.Range step="5" min="5" max="60" onChange={changeAppRange} value={appTimeout}/>
         </FormGroup>
 
     const allPosts = sorted.map((post)=><AdminItem downloadPost={downloadPosthandler} key={post.id} updateFavourite={updateFavourite} delete={deletePost} post={post}/>)
@@ -264,7 +276,8 @@ const Admin = (props) => {
                             <Stack className="justify-content-between" gap={3} direction="horizontal">
                                 <div><LibraryOn context="admin"/></div>
                                 <div>Admin v0.1</div>
-                            </Stack>
+                                {serverMarkup}
+                            </Stack> 
                             {auth?.currentUser ? funcs : ""}
                         </Stack>
                     </Card.Header>
@@ -282,8 +295,8 @@ const Admin = (props) => {
                         <Stack className="justify-content-between" direction="horizontal" gap={3}>
                             {/* {minGridSize} */}
                             {maxGridSize}
-                            {wallTimeout}
-                            {appTimeout}
+                            {wallTimeoutMarkup}
+                            {appTimeoutMarkup}
                         </Stack>
                     </Card.Body>
                 </Card>

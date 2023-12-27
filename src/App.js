@@ -5,10 +5,10 @@ import { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import * as actionTypes from './store/actions';
 import { Outlet } from "react-router";
-import { colours, grids, walks } from './constants/constants';
+import { colours, grids, Internal, Server } from './constants/constants';
 
 // firebase
-import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { getFirestore, getDocs, writeBatch, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { firebaseConfigs } from './firebase/firebase';
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -36,9 +36,15 @@ function App(props) {
   const [modalPromise, setModalPromise] = useState(null);
   const [modalContents, setModalContents] = useState({});
   const [confirmation, setConfirmation] = useState(false);
+  const [server, setServer] = useState(Server.DEVELOPMENT);
+  const [settingsId, setSettingsId] = useState();
 
   const [minGrid, setMinGrid] = useState(0);
   const [maxGrid, setMaxGrid] = useState(4);
+  const [wallTimeout, setWallTimeout] = useState(30);
+  const [appTimeout, setAppTimeout] = useState(15);
+
+  // const [wakeWall, setWakeWall] = useState(false);
 
   // modal
 
@@ -56,13 +62,14 @@ function App(props) {
   }
 
   useEffect(() => {
-    const app = firebaseConfigs.find(config=>config.name==="lib-app");
+    const app = firebaseConfigs.find(config=>config.name===server);
     setApp(initializeApp(app.config, app.name));
+    setSettingsId(app.settingsId);
     props.onInitApp({
       type: actionTypes.INIT_APP,
       appKey: app.config.apiKey
     });
-  }, [props])
+  }, [props, server])
 
   useEffect(() => {
     if(!app) return;
@@ -95,20 +102,42 @@ function App(props) {
 
   useEffect(()=>{
     if(!app) return;
-    // await updateDoc(doc(getFirestore(app), "settings", "srGzLoFqUc3ifsS1oh98"), {
+    // clearMessage();
     let unsubscribe = onSnapshot(collection(getFirestore(app), "settings"), (snapshot)=>{
       // for admin
       const settings = snapshot.docs.map((doc) => ({...doc.data(), id: "srGzLoFqUc3ifsS1oh98" }))[0];
       setMinGrid(settings.gridMin);
       setMaxGrid(settings.gridMax);
+      setWallTimeout(settings.wallTimeout);
+      setAppTimeout(settings.appTimeout);
+      // if(!wakeWall && settings.internal === Internal.WAKE_WALL){
+      //   setWakeWall(true);
+      //   clearMessage();
+      // }
     })
     return () => {
       unsubscribe();
     }
-  }, [app, minGrid, maxGrid])
+  }, [app/*, minGrid, maxGrid*/])
+
+  // const clearMessage = async () => {
+  //   await updateDoc(doc(getFirestore(app), "settings", settingsId), {
+  //     internal: Internal.NONE
+  //   })
+  // }
 
   const deletePost = async (id) => {
     await deleteDoc(doc(getFirestore(app), "posts", id));
+  }
+
+  const deleteAllPosts = async () => {
+    const batch = writeBatch(getFirestore(app));
+    const querySnapshot = await getDocs(collection(getFirestore(app), "posts"));
+    querySnapshot.forEach((post) => {
+      batch.delete(doc(getFirestore(app), "posts", post.id));
+    });
+    await batch.commit().then(()=>{
+    });
   }
 
   const updateFavourite = async (id, flag) => {
@@ -132,8 +161,8 @@ function App(props) {
     })
   }
 
-  const initSettings = async (data) => {
-    await updateDoc(doc(getFirestore(app), "settings", "srGzLoFqUc3ifsS1oh98"), {
+  const initSettings = async () => {
+    await updateDoc(doc(getFirestore(app), "settings", settingsId), {
       gridMin: 0,
       gridMax: 4,
       wallTimeout: 30,
@@ -142,7 +171,7 @@ function App(props) {
   }
 
   const updateSettings = async (data) => {
-    await updateDoc(doc(getFirestore(app), "settings", "srGzLoFqUc3ifsS1oh98"), {
+    await updateDoc(doc(getFirestore(app), "settings", settingsId), {
       gridMin: minGrid,
       gridMax: maxGrid,
       ...data
@@ -154,7 +183,30 @@ function App(props) {
   return (
     <div className="h-100" style={adjAlert}>
 
-      <Outlet context={[wallPosts, adminPosts, deletePost, savePost, updateFavourite, setShowModal, setModalContents, setModalPromise, props.onAlert, auth, confirmation, setConfirmation, minGrid, maxGrid, updateSettings]}></Outlet>
+      <Outlet context={[
+        wallPosts,
+        adminPosts,
+        deletePost,
+        savePost,
+        updateFavourite,
+        setShowModal,
+        setModalContents,
+        setModalPromise,
+        props.onAlert,
+        auth,
+        confirmation,
+        setConfirmation,
+        minGrid,
+        maxGrid,
+        updateSettings,
+        server,
+        setServer,
+        wallTimeout,
+        appTimeout,
+        deleteAllPosts,
+        app,
+        settingsId
+      ]}></Outlet>
       
       <Modal dialogClassName={modalContents.customClass} centered show={showModal} onHide={modalEscape}>
         <Modal.Header closeButton>
@@ -186,7 +238,9 @@ const mapStateToProps = state => {
     showAlert: state.showAlert,
     alertVariant: state.alertVariant,
     alertContents: state.alertContents,
-    appKey: state.appKey
+    appKey: state.appKey,
+    app: state.app,
+    settingsId: state.settingsId
   };
 };
 

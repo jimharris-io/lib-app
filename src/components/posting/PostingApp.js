@@ -2,9 +2,12 @@
 import { Container, Col, Row, Card, Stack, Button, Form } from "react-bootstrap";
 import Carousel from 'react-bootstrap/Carousel';
 
+// firebase
+import { getFirestore, getDocs, writeBatch, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+
 // app
-import { colours, shapes, fonts, randomMessages } from '../../constants/constants';
-import { useState, useRef } from "react";
+import { colours, shapes, fonts, randomMessages, Internal } from '../../constants/constants';
+import { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 
 // components
@@ -32,7 +35,7 @@ const matcher = new RegExpMatcher({
 	...englishRecommendedTransformers,
 })
 
-const PostingApp = () => {
+const PostingApp = (props) => {
 
     const [ message, setMessage ] = useState('Type your message here');
     const [ font, setFont ] = useState(0);
@@ -40,13 +43,31 @@ const PostingApp = () => {
     const [ textColour, setTextColour ] = useState(0);
     const [ backgroundColour, setBackgroundColour ] = useState(1);
     const [ borderColour, setBorderColour ] = useState(2);
-    const [ idle, setIdle ] = useState(true);
+    const [ idle, setIdle ] = useState({value:true});
 
     const ref = useRef(null);
+    const allRef = useRef(null);
 
-    const [,,, savePost,, setShowModal, setModalContents, setModalPromise,,, confirmation, setConfirmation] = useOutletContext();
+    const [,,, savePost,, setShowModal, setModalContents, setModalPromise,,, confirmation, setConfirmation,,,,,,,,, app, settingsId] = useOutletContext();
 
     const [index, setIndex] = useState(0);
+
+    useEffect(()=>{
+        console.log("// app: init timeout");
+        const timeout = setTimeout(()=>{
+            if(!idle.value){
+                reset();
+                console.log("// app: executed timeout, set idle");
+            } else {
+                console.log("// app: executed timeout, nothing to do");
+            }
+        }, 10000)
+        return () => {
+            console.log("// app: cleared timeout");
+            clearTimeout(timeout);
+        }
+    }, [idle])
+
     const handleSelect = (selectedIndex, e) => {
       setIndex(selectedIndex);
     };
@@ -66,6 +87,7 @@ const PostingApp = () => {
             setModalPromise(null);
             return;
         }
+        
         savePost({
             message: message,
             font: font,
@@ -110,6 +132,7 @@ const PostingApp = () => {
     const changeFont = (index) => {
         setFont(index);
     }
+
     const selectFont = fonts.map((thisFont, i) => {
         const key = `font-${thisFont.value}`;
         return <Form.Check className={`font-select${i === font ? ' checked' : ''}`} checked={i === font} key={key} type="radio" name="font">
@@ -120,6 +143,7 @@ const PostingApp = () => {
     const changeShape = (index) => {
         setShape(index);
     }
+
     const selectShape = shapes.map((thisShape, i) => {   
         const fill = colours.find((colour) => colour.value === backgroundColour)?.hex;
         let stroke = "none";
@@ -155,6 +179,7 @@ const PostingApp = () => {
         // }
         setBackgroundColour(index);
     }
+
     const selectBackgroundColour = colours.map((colour, i) => {
         if(colour.value === 5) return;
         if(colour.value === 6) return;
@@ -178,8 +203,10 @@ const PostingApp = () => {
         //     setModalPromise(null);
         //     return;
         // }
+        setIdle({...{value: false}});
         setBorderColour(index);
     }
+
     const selectBorderColour = colours.map((colour, i) => {
         if(colour.value === 5) return;
         if(colour.value === backgroundColour) return;
@@ -203,6 +230,7 @@ const PostingApp = () => {
         // }
         setTextColour(index);
     }
+    
     const selectTextColour = colours.map((colour, i) => {
         // if(colour.value === borderColour) return;
         if(colour.value === backgroundColour) return;
@@ -226,9 +254,9 @@ const PostingApp = () => {
     }
 
     const reset = () => {
-        // setIndex(0);
+        setIndex(0);
         setConfirmation(false);
-        // setIdle(true);
+        setIdle({...{value: true}});
         setFont(0);
         setShape(0);
         setTextColour(0);
@@ -237,143 +265,149 @@ const PostingApp = () => {
         setMessage("Type your message here");
     }
 
-    const dismissIdle = () => {
-        setIdle(false);
+    const dismissIdle = async () => {
+        awake();
+    }
+
+    const awake = async () => {      
+        setIdle({...{value: false}});
+        await updateDoc(doc(getFirestore(app), "settings", settingsId), {
+            internal: Internal.WAKE_WALL
+        }) 
     }
 
     const dismissConfirmation = () => {
         reset();
     }
 
+    const data = [
+        {
+            jsx: <Form.Group className="h-100" controlId="shape">
+                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+                        <Form.Label><span className="sohne-leicht">Step one</span><br/>Choose a shape</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                            {selectShape}
+                        </Stack>
+                    </Stack>
+                </Form.Group>
+        },
+        {
+            jsx: <Form.Group className="h-100" controlId="backgroundColour">
+                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+                        <Form.Label><span className="sohne-leicht">Step two</span><br/>Choose a colour for the shape's background</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                            {selectBackgroundColour}
+                        </Stack>
+                    </Stack>
+                </Form.Group>
+        },
+        {
+            jsx: <Form.Group className="h-100" controlId="borderColour">
+                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+                        <Form.Label><span className="sohne-leicht">Step three</span><br/>Choose a colour for the shape's border</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                            {selectBorderColour}
+                        </Stack>
+                    </Stack>
+                </Form.Group>
+        },
+        {
+            jsx:  <Form.Group className="h-100" controlId="textColour">
+                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+                        <Form.Label><span className="sohne-leicht">Step four</span><br/>Choose a colour for your message</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                            {selectTextColour}
+                        </Stack>
+                    </Stack>
+                </Form.Group>
+        },
+        {
+            jsx: <Form.Group className="h-100" controlId="font">
+                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+                        <Form.Label><span className="sohne-leicht">Step five</span><br/>Choose a font for your message</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                            {selectFont}
+                        </Stack>
+                    </Stack>
+                </Form.Group>
+        },
+        {
+            jsx: <Form.Group className="h-100" controlId="font">
+                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+                        <Form.Label>Submit your message</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                            <button className="submit-button" type="submit"><Submit context="app"/></button>
+                            {/* <Button variant="secondary" onClick={rand}>Rand</Button> */}
+                        </Stack>
+                    </Stack>
+                </Form.Group>
+        }
+    ]
 
-        const data = [
-            {
-                jsx: <Form.Group className="h-100" controlId="shape">
-                        <Stack className="h-100 justify-content-evenly" direction="vertical">
-                            <Form.Label><span className="sohne-leicht">Step one</span><br/>Choose a shape</Form.Label>
-                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                {selectShape}
-                            </Stack>
-                        </Stack>
-                    </Form.Group>
-            },
-            {
-                jsx: <Form.Group className="h-100" controlId="backgroundColour">
-                        <Stack className="h-100 justify-content-evenly" direction="vertical">
-                            <Form.Label><span className="sohne-leicht">Step two</span><br/>Choose a colour for the shape's background</Form.Label>
-                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                {selectBackgroundColour}
-                            </Stack>
-                        </Stack>
-                    </Form.Group>
-            },
-            {
-                jsx: <Form.Group className="h-100" controlId="borderColour">
-                        <Stack className="h-100 justify-content-evenly" direction="vertical">
-                            <Form.Label><span className="sohne-leicht">Step three</span><br/>Choose a colour for the shape's border</Form.Label>
-                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                {selectBorderColour}
-                            </Stack>
-                        </Stack>
-                    </Form.Group>
-            },
-            {
-                jsx:  <Form.Group className="h-100" controlId="textColour">
-                        <Stack className="h-100 justify-content-evenly" direction="vertical">
-                            <Form.Label><span className="sohne-leicht">Step four</span><br/>Choose a colour for your message</Form.Label>
-                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                {selectTextColour}
-                            </Stack>
-                        </Stack>
-                    </Form.Group>
-            },
-            {
-                jsx: <Form.Group className="h-100" controlId="font">
-                        <Stack className="h-100 justify-content-evenly" direction="vertical">
-                            <Form.Label><span className="sohne-leicht">Step five</span><br/>Choose a font for your message</Form.Label>
-                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                {selectFont}
-                            </Stack>
-                        </Stack>
-                    </Form.Group>
-            },
-            {
-                jsx: <Form.Group className="h-100" controlId="font">
-                        <Stack className="h-100 justify-content-evenly" direction="vertical">
-                            <Form.Label>Submit your message</Form.Label>
-                            <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                                <button className="submit-button" type="submit"><Submit context="app"/></button>
-                                {/* <Button variant="secondary" onClick={rand}>Rand</Button> */}
-                            </Stack>
-                        </Stack>
-                    </Form.Group>
-            }
-        ]
+    const idleScreen = <main className="container-fluid" id="posting-app-idle">
+        <section onClick={dismissIdle}>
+            <LibraryOn context="idle"/>
+            <About context="idle"/>
+            <span>Tap to begin</span>
+            {/* <Button variant="primary" onClick={dismissIdle}>Continue</Button> */}
+        </section>
+    </main>
 
-        const idleScreen = <main className="container-fluid" id="posting-app-idle">
-            <section onClick={dismissIdle}>
-                <LibraryOn context="idle"/>
-                <About context="idle"/>
-                <span>Tap to begin</span>
-                {/* <Button variant="primary" onClick={dismissIdle}>Continue</Button> */}
+    const confirmationScreen = <main className="container-fluid" id="posting-app-confirmation">
+        <section onClick={dismissConfirmation}>
+            <LibraryOn context="confirmation"/>
+            <span>Thanks!</span>
+            <Join context="confirmation"/>
+            {/* <Button variant="primary" onClick={dismissConfirmation}>Continue</Button> */}
+        </section>
+    </main>
+
+    const main = <main onClick={awake} className="container-lg" id="posting-app">
+        <header>
+            <About context="header"/>
+            {/* <LibraryOn context="header"/> */}
+        </header>
+        <div id="contents">
+
+            <section onClick={textfocus} id="preview">
+                <div>{preview}</div>
             </section>
-        </main>
 
-        const confirmationScreen = <main className="container-fluid" id="posting-app-confirmation">
-            <section onClick={dismissConfirmation}>
-                <LibraryOn context="confirmation"/>
-                <span>Thanks!</span>
-                <Join context="confirmation"/>
-                {/* <Button variant="primary" onClick={dismissConfirmation}>Continue</Button> */}
+            <section id="editor">
+
+                <Form className="w-100 h-100" onSubmit={saveHandler}>
+
+                    <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
+
+                    <Form.Group controlId="message">
+                        <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+                    </Form.Group>
+
+                    <Carousel nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        {data.map((slide, i) => {
+                            return (
+                                <Carousel.Item key={`slide-${i}`}>
+                                    <div className="carousel-item-contents">
+                                        {slide.jsx}
+                                    </div>
+                                </Carousel.Item>
+                            )
+                        })}
+                    </Carousel>
+                </Form>
+
             </section>
-        </main>
+        </div>
+        <footer onClick={rand}>
+            <LibraryOn context="footer"/>
+            <ArtsCouncil context="footer"/>
+            <Bhcc context="footer"/>
+        </footer>
+    </main>
 
-        const main = <main className="container-lg" id="posting-app">
-            <header>
-                <About context="header"/>
-                {/* <LibraryOn context="header"/> */}
-            </header>
-            <div id="contents">
-
-                <section onClick={textfocus} id="preview">
-                    <div>{preview}</div>
-                </section>
-
-                <section id="editor">
-
-                    <Form className="w-100 h-100" onSubmit={saveHandler}>
-
-                        <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
-
-                        <Form.Group controlId="message">
-                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
-                        </Form.Group>
-
-                        <Carousel nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
-                            {data.map((slide, i) => {
-                                return (
-                                    <Carousel.Item key={`slide-${i}`}>
-                                        <div className="carousel-item-contents">
-                                            {slide.jsx}
-                                        </div>
-                                    </Carousel.Item>
-                                )
-                            })}
-                        </Carousel>
-                    </Form>
-
-                </section>
-            </div>
-            <footer onClick={rand}>
-                <LibraryOn context="footer"/>
-                <ArtsCouncil context="footer"/>
-                <Bhcc context="footer"/>
-            </footer>
-        </main>
-
-        if(idle) return idleScreen;
-        // if(confirmation) return confirmationScreen;
-        return main;
+    if(idle.value) return idleScreen;
+    // if(confirmation) return confirmationScreen;
+    return main;
 }
 
 export default PostingApp;
