@@ -1,32 +1,52 @@
 import * as actionTypes from "./actions";
 
 const initialState = {
-  showAlert: false,
-  alertVariant: "",
-  alertContents: "",
-  appKey: ""
+  loading: false,
+  showModal: false,
+  modalContents: {},
+  modalResolve: null
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.SHOW_ALERT:
+    case actionTypes.ERROR_MESSAGE:
       return {
         ...state,
-        showAlert: true,
-        alertVariant: action.variant,
-        alertContents: action.contents,
+        showModal: true,
+        modalContents: {
+          title: `Error ${action.title}`,
+          body: <pre>{action.error.toString().replace("projects/", "/").replace(/: /g, `:\n`).replace(/\/(?=[^/]*$)/, '\/\n')}</pre>,
+          reject: "Cancel",
+          resolve: "Throw"
+        },
+        modalResolve: {
+          callback: () => {
+            throw(action.error);
+          }
+        }
       };
-    case actionTypes.DISMISS_ALERT:
+    case actionTypes.CLOSE_MODAL:
       return {
         ...state,
-        showAlert: false,
-        alertVariant: "",
-        alertContents: "",
+        showModal: false,
+        modalResolve: null
       };
-    case actionTypes.INIT_APP:
+    case actionTypes.OPEN_MODAL:
       return {
         ...state,
-        appKey: action.appKey,
+        showModal: true,
+        modalContents: action.contents,
+        modalResolve: action.resolve
+      };
+    case actionTypes.SHOW_LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
+    case actionTypes.HIDE_LOADING:
+      return {
+        ...state,
+        loading: false,
       };
     default:
       return state;

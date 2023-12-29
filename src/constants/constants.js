@@ -107,6 +107,8 @@ export const fonts = [
 
 export const adminMessageLength = 140;
 
+export const pagelength = 10;
+
 export const randomMessages = [
     "like to pop in for a coffee and read the paper",
     "I go there every night after school",

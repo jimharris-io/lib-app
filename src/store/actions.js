@@ -1,3 +1,5 @@
-export const SHOW_ALERT = 'show_alert';
-export const DISMISS_ALERT = 'dismiss_alert';
-export const INIT_APP = 'init_app';
+export const SHOW_LOADING = 'show_loading';
+export const HIDE_LOADING = 'hide_loading';
+export const OPEN_MODAL = 'open_modal';
+export const CLOSE_MODAL = 'close_modal';
+export const ERROR_MESSAGE = 'error_message';

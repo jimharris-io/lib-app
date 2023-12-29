@@ -1,14 +1,15 @@
 // bootstrap
-import { Container, Col, Row, Card, Stack, Button, Form } from "react-bootstrap";
+import { Stack, Form } from "react-bootstrap";
 import Carousel from 'react-bootstrap/Carousel';
 
 // firebase
-import { getFirestore, getDocs, writeBatch, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, updateDoc } from "firebase/firestore";
 
 // app
 import { colours, shapes, fonts, randomMessages, Internal } from '../../constants/constants';
 import { useState, useRef, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actionTypes from "./../../store/actions";
 
 // components
 import Post from "../wall/Post";
@@ -21,14 +22,9 @@ import Submit from "./Submit";
 import Next from "./Next";
 import Previous from "./Previous";
 import Ok from "./Ok";
-import Continue from "./Continue"
+// import Continue from "./Continue"
 
-import {
-	RegExpMatcher,
-	TextCensor,
-	englishDataset,
-	englishRecommendedTransformers,
-} from 'obscenity';
+import { RegExpMatcher, TextCensor, englishDataset, englishRecommendedTransformers } from 'obscenity';
 
 const matcher = new RegExpMatcher({
 	...englishDataset.build(),
@@ -44,26 +40,23 @@ const PostingApp = (props) => {
     const [ backgroundColour, setBackgroundColour ] = useState(1);
     const [ borderColour, setBorderColour ] = useState(2);
     const [ idle, setIdle ] = useState({value:true});
-
+    const [ confirmation, setConfirmation ] = useState(false);
     const ref = useRef(null);
-    const allRef = useRef(null);
-
-    const [,,, savePost,, setShowModal, setModalContents, setModalPromise,,, confirmation, setConfirmation,,,,,,,,, app, settingsId] = useOutletContext();
 
     const [index, setIndex] = useState(0);
 
     useEffect(()=>{
-        console.log("// app: init timeout");
+        // console.log("// app: init timeout");
         const timeout = setTimeout(()=>{
             if(!idle.value){
                 reset();
-                console.log("// app: executed timeout, set idle");
-            } else {
+                // console.log("// app: executed timeout, set idle");
+            }/* else {
                 console.log("// app: executed timeout, nothing to do");
-            }
+            }*/
         }, 10000)
         return () => {
-            console.log("// app: cleared timeout");
+            // console.log("// app: cleared timeout");
             clearTimeout(timeout);
         }
     }, [idle])
@@ -72,30 +65,51 @@ const PostingApp = (props) => {
       setIndex(selectedIndex);
     };
 
-    const saveHandler = (event) => {
-        event.preventDefault();
-        if(matcher.hasMatch(message)){
-            setShowModal(true);
-            setModalContents({
+    const warnProfanity = () => { 
+        props.onOpenModal({
+            type: actionTypes.OPEN_MODAL,
+            contents: {
                 customClass: "posting",
                 title: "Profanity found",
                 body: <span>Whoa! You need to change that.</span>,
                 reject: null,
                 resolve: "",
                 customButton: <Ok context="app"/>
-            })
-            setModalPromise(null);
+            },
+            resolve: null
+        })
+    }
+
+    const saveHandler = async (event) => {
+        event.preventDefault();
+
+        if(matcher.hasMatch(message)){
+            warnProfanity();
             return;
         }
-        
-        savePost({
+
+        props.onShowLoading({type: actionTypes.SHOW_LOADING});
+
+        await addDoc(collection(getFirestore(props.app), "posts"), {
             message: message,
             font: font,
             shape: shape,
             textColour: textColour,
             backgroundColour: backgroundColour,
-            borderColour: borderColour
-        });
+            borderColour: borderColour,
+            created: new Date(),
+            favourite: false
+        }).then(()=>{
+            setConfirmation(true);
+        }).catch((err)=>{
+            props.onErrorMessage({
+                type: actionTypes.ERROR_MESSAGE,
+                title: "saving post",
+                error: err
+            })
+        }).finally(()=>{
+            props.onHideLoading({type: actionTypes.HIDE_LOADING});
+        })
     }
 
     const rand = () => {
@@ -163,20 +177,6 @@ const PostingApp = (props) => {
     })
 
     const changeBackgroundColour = (index, e) => {
-        // if(index === borderColour || index === textColour) {
-        //     const msg = index === borderColour ? 'border' : 'text';
-        //     const step = index === borderColour ? 'three' : 'four';
-        //     setShowModal(true);
-        //     setModalContents({
-        //         customClass: "posting",
-        //         title: "Choose another colour",
-        //         body: <span>{`That's the current ${msg} colour.`}<br/>{`Change it in step ${step} or choose another colour`}</span>,
-        //         reject: null,
-        //         resolve: "Ok"
-        //     })
-        //     setModalPromise(null);
-        //     return;
-        // }
         setBackgroundColour(index);
     }
 
@@ -191,18 +191,6 @@ const PostingApp = (props) => {
     })
 
     const changeBorderColour = (index) => {
-        // if(index === backgroundColour) {
-        //     setShowModal(true);
-        //     setModalContents({
-        //         customClass: "posting",
-        //         title: "Choose another colour",
-        //         body: <span>{`That's the current shape colour.`}<br/>{`Change it in step two or choose another colour`}</span>,
-        //         reject: null,
-        //         resolve: "Ok"
-        //     })
-        //     setModalPromise(null);
-        //     return;
-        // }
         setIdle({...{value: false}});
         setBorderColour(index);
     }
@@ -216,18 +204,6 @@ const PostingApp = (props) => {
     })
 
     const changeTextColour = (index) => {
-        // if(index === backgroundColour) {
-        //     setShowModal(true);
-        //     setModalContents({
-        //         customClass: "posting",
-        //         title: "Choose another colour",
-        //         body: <span>{`That's the current shape colour.`}<br/>{`Change it in step two or choose another colour`}</span>,
-        //         reject: null,
-        //         resolve: "Ok"
-        //     })
-        //     setModalPromise(null);
-        //     return;
-        // }
         setTextColour(index);
     }
     
@@ -271,9 +247,16 @@ const PostingApp = (props) => {
 
     const awake = async () => {      
         setIdle({...{value: false}});
-        await updateDoc(doc(getFirestore(app), "settings", settingsId), {
+        await updateDoc(doc(getFirestore(props.app), "settings", props.app.options.settingsId), {
             internal: Internal.WAKE_WALL
-        }) 
+        }).then((res)=>{})
+        .catch((err)=>{
+            props.onErrorMessage({
+                type: actionTypes.ERROR_MESSAGE,
+                title: "waking wall",
+                error: err
+            })
+        }).finally(()=>{})
     }
 
     const dismissConfirmation = () => {
@@ -344,70 +327,83 @@ const PostingApp = (props) => {
         }
     ]
 
-    const idleScreen = <main className="container-fluid" id="posting-app-idle">
-        <section onClick={dismissIdle}>
-            <LibraryOn context="idle"/>
-            <About context="idle"/>
-            <span>Tap to begin</span>
-            {/* <Button variant="primary" onClick={dismissIdle}>Continue</Button> */}
-        </section>
-    </main>
-
-    const confirmationScreen = <main className="container-fluid" id="posting-app-confirmation">
-        <section onClick={dismissConfirmation}>
-            <LibraryOn context="confirmation"/>
-            <span>Thanks!</span>
-            <Join context="confirmation"/>
-            {/* <Button variant="primary" onClick={dismissConfirmation}>Continue</Button> */}
-        </section>
-    </main>
-
-    const main = <main onClick={awake} className="container-lg" id="posting-app">
-        <header>
-            <About context="header"/>
-            {/* <LibraryOn context="header"/> */}
-        </header>
-        <div id="contents">
-
-            <section onClick={textfocus} id="preview">
-                <div>{preview}</div>
+    const idleScreen =
+        <main className="container-fluid" id="posting-app-idle">
+            <section onClick={dismissIdle}>
+                <LibraryOn context="idle"/>
+                <About context="idle"/>
+                <span>Tap to begin</span>
             </section>
+        </main>
 
-            <section id="editor">
-
-                <Form className="w-100 h-100" onSubmit={saveHandler}>
-
-                    <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
-
-                    <Form.Group controlId="message">
-                        <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
-                    </Form.Group>
-
-                    <Carousel nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
-                        {data.map((slide, i) => {
-                            return (
-                                <Carousel.Item key={`slide-${i}`}>
-                                    <div className="carousel-item-contents">
-                                        {slide.jsx}
-                                    </div>
-                                </Carousel.Item>
-                            )
-                        })}
-                    </Carousel>
-                </Form>
-
+    const confirmationScreen =
+        <main className="container-fluid" id="posting-app-confirmation">
+            <section onClick={dismissConfirmation}>
+                <LibraryOn context="confirmation"/>
+                <span>Thanks!</span>
+                <Join context="confirmation"/>
             </section>
-        </div>
-        <footer onClick={rand}>
-            <LibraryOn context="footer"/>
-            <ArtsCouncil context="footer"/>
-            <Bhcc context="footer"/>
-        </footer>
-    </main>
+        </main>
 
-    if(idle.value) return idleScreen;
+    const main =
+        <main onClick={awake} className="container-lg" id="posting-app">
+            <header>
+                <About context="header"/>
+            </header>
+            <div id="contents">
+
+                <section onClick={textfocus} id="preview">
+                    <div>{preview}</div>
+                </section>
+
+                <section id="editor">
+
+                    <Form className="w-100 h-100" onSubmit={saveHandler}>
+
+                        <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
+
+                        <Form.Group controlId="message">
+                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+                        </Form.Group>
+
+                        <Carousel nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                            {data.map((slide, i) => {
+                                return (
+                                    <Carousel.Item key={`slide-${i}`}>
+                                        <div className="carousel-item-contents">
+                                            {slide.jsx}
+                                        </div>
+                                    </Carousel.Item>
+                                )
+                            })}
+                        </Carousel>
+                    </Form>
+
+                </section>
+            </div>
+            <footer onClick={rand}>
+                <LibraryOn context="footer"/>
+                <ArtsCouncil context="footer"/>
+                <Bhcc context="footer"/>
+            </footer>
+        </main>
+
+    // if(idle.value) return idleScreen;
     // if(confirmation) return confirmationScreen;
     return main;
 }
 
-export default PostingApp;
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onShowLoading: (action) => dispatch(action),
+        onHideLoading: (action) => dispatch(action),
+        onOpenModal: (action) => dispatch(action),
+        onErrorMessage: (action) => dispatch(action)
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostingApp);

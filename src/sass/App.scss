@@ -20,13 +20,17 @@ body {
   background: black;
 }
 
-.alert--root {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  border-radius: 0;
-  text-align: center;
+.spinner-border {
+  position: fixed;
+  bottom: 0;
+  margin: 1rem;
+  right: 0;
+  &.show-loading {
+    display: block;
+  }
+  &.hide-loading {
+    display: none;
+  }
 }
 
 // // ipad mini fixes for demo

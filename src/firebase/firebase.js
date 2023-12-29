@@ -9,6 +9,7 @@ const firbaseConfigs = [
       storageBucket: "lib-app-2ed3c.appspot.com",
       messagingSenderId: "651231171181",
       appId: "1:651231171181:web:3dae57c2844c7cb2b36564",
+      settingsId: "srGzLoFqUc3ifsS1oh98",
     },
   },
   {
@@ -20,7 +21,8 @@ const firbaseConfigs = [
       projectId: "lib-app-production",
       storageBucket: "lib-app-production.appspot.com",
       messagingSenderId: "522927814047",
-      appId: "1:522927814047:web:663dd791864f763446b9aa"
+      appId: "1:522927814047:web:663dd791864f763446b9aa",
+      settingsId: "00WfndosxLgFrJy4LtxP",
     }
   }
 ];

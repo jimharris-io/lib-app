@@ -3,7 +3,7 @@ import { Stack } from "react-bootstrap";
 import { Trash3, Heart, Camera, HeartFill } from 'react-bootstrap-icons';
 
 // app
-import { adminMessageLength, colours, fonts, shapes } from '../../constants/constants';
+import { adminMessageLength } from '../../constants/constants';
 
 // components
 import Post from "../wall/Post";
