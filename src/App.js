@@ -32,7 +32,7 @@ setTimeout(() => {
 function App(props) {
 
   const [app, setApp] = useState();
-  const [server, setServer] = useState(Server.DEVELOPMENT);
+  const [server, setServer] = useState(Server.PRODUCTION);
 
   // modal
 

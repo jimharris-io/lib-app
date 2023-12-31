@@ -11,7 +11,7 @@ import * as actionTypes from "./../../store/actions";
 import { connect } from "react-redux";
 
 // firebase
-import { or, where, query, limit, orderBy, getFirestore, collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import { or, and, where, query, limit, orderBy, getFirestore, collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 document.addEventListener("keydown", (e) => {
     if (e.getModifierState && e.getModifierState("Control") && e.code === "Space") {
@@ -30,6 +30,7 @@ function toggleFullScreen() {
 const Wall = (props) => {
 
     const [posts, setPosts] =  useState([]);
+    const [faves, setFaves] =  useState([]);
     const [minGrid, setMinGrid] = useState(0);
     const [maxGrid, setMaxGrid] = useState(4);
     const [wallTimeout, setWallTimeout] = useState(30);
@@ -46,7 +47,7 @@ const Wall = (props) => {
             }/* else {
                 console.log("// wall: executed timeout, nothing to do");
             }*/
-        }, 30000)
+        }, 3000000)
         return () => {
             // console.log("// wall: cleared timeout");
             clearTimeout(timeout);
@@ -85,20 +86,19 @@ const Wall = (props) => {
         return () => {
             unsubscribe();
         }
-    }, [props.app, idle])
+    }, [props, idle])
 
     // posts // QUERY
     useEffect(() => {
         if(!props.app) return;
-
         const colRef = collection(getFirestore(props.app), "posts");
-        const indexQuery = query(colRef, orderBy('created', 'desc'), limit(walks[0].length), or(where('favourite', '==', true)))
-        
-        let unsubscribe = onSnapshot(indexQuery, (snapshot)=>{
+        const q = query(colRef, orderBy('created', 'desc'), where('favourite', '==', false));
+        let unsubscribe = onSnapshot(q, (snapshot)=>{
             const posts = snapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
             let sorted = posts.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
-            const threshold = grids[maxGrid].threshold// threshold is always length of the walk but the walk can't exceed the grid
-            const chunked = sorted.map((e, i) => i % threshold ? null : sorted.slice(i, i + threshold))
+            // threshold is always length of the walk but the walk can't exceed the grid
+            const threshold = grids[maxGrid].threshold
+            const chunked = sorted.map((e, i) => i % threshold ? null : posts.slice(i, i + threshold))
                 .filter(e => e)
                 .pop() || [];
             setPosts(chunked);
@@ -112,7 +112,27 @@ const Wall = (props) => {
         return () => {
             unsubscribe();
         }
-    }, [props.app, maxGrid, grids])
+    }, [props, maxGrid])
+
+    // favourites
+    useEffect(() => {
+        if(!props.app) return;
+        const colRef = collection(getFirestore(props.app), "posts");
+        const q = query(colRef, orderBy('created', 'desc'), where('favourite', '==', true));
+        let unsubscribe = onSnapshot(q, (snapshot)=>{
+            const faves = snapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+            setFaves(faves);
+        }, (err) => {
+            props.onErrorMessage({
+                type: actionTypes.ERROR_MESSAGE,
+                title: "listening to favourites",
+                error: err
+            })
+        })
+        return () => {
+            unsubscribe();
+        }
+    }, [props])
     
     // settings
     useEffect(()=>{
@@ -132,13 +152,28 @@ const Wall = (props) => {
         return () => {
             unsubscribe();
         }
-    }, [props.app])
+    }, [props])
 
     const wake = () => {
         setIdle({...{value:false}});
     }
 
-    let wallPosts = posts.map((post, i) => {
+    const currentGrid = (walks[0][posts.length - 1])?.grid || 0;
+    const currentThreshold = grids[currentGrid].threshold;
+    const remainingSlots = currentThreshold - posts.length;
+    const favesShown = faves.slice(0, remainingSlots)
+    console.log(`thresh:${currentThreshold}, posts:${posts.length}, slots:${remainingSlots}, shown:${favesShown.length}`);
+
+    const aggregate = [
+        ...favesShown,
+        ...posts
+    ];
+
+    let sorted = aggregate.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
+
+    // console.log(posts);
+
+    let wallPosts = sorted.map((post, i) => {
         const wallPost = <Post key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
         return wallPost;
     })

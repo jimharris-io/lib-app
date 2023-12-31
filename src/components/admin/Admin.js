@@ -472,7 +472,7 @@ const Admin = (props) => {
             <Card className="admin">
                 <Card.Header>
                     <Stack className="justify-content-between" direction="horizontal">
-                        <span>Posts</span>
+                        <span>Posts ({posts.length})</span>
                         {sort}
                     </Stack>
                 </Card.Header>

@@ -54,7 +54,7 @@ const PostingApp = (props) => {
             }/* else {
                 console.log("// app: executed timeout, nothing to do");
             }*/
-        }, 10000)
+        }, 1000000)
         return () => {
             // console.log("// app: cleared timeout");
             clearTimeout(timeout);
