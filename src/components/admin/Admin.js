@@ -24,7 +24,7 @@ const Admin = (props) => {
     const [dateSortOrder, setDateSortOrder] = useState(SortOrder.ASCENDING);
     const [nameSortOrder, setNameSortOrder] = useState(SortOrder.ASCENDING);
     const [sortBy, setSortBy] = useState(SortBy.NAME);
-    // const [page, setPage] = useState(0);
+    const [page, setPage] = useState(0);
     const [email, setEmail ] = useState('');
     const [password, setPassword ] = useState('');
     const [error, setError ] = useState('');
@@ -41,6 +41,7 @@ const Admin = (props) => {
     // posts // QUERY
     useEffect(() => {
         if(!props.app) return;
+
         const auth = getAuth(props.app);
         setAuth(auth);
         onAuthStateChanged(auth, (user) => {
@@ -113,7 +114,7 @@ const Admin = (props) => {
         });
         await batch.commit()
             .then((res)=>{
-                //
+                setPage(0);
             }).catch((err)=>{
                 props.onErrorMessage({
                     type: actionTypes.ERROR_MESSAGE,
@@ -425,16 +426,19 @@ const Admin = (props) => {
 
     const allPosts = sorted.map((post)=><AdminItem downloadPost={downloadPosthandler} key={post.id} updateFavourite={updateFavourite} delete={deletePost} post={post}/>)
 
-    // let pages = [];
-    // for (let i = 0; i < (allPosts.length / pagelength); i++) {
-    //     pages.push(
-    //         <Pagination.Item key={`page=${i}`} onClick={()=> setPage(i)} active={i === page}>
-    //         {i + 1}
-    //         </Pagination.Item>
-    //     );
-    // }
-
-    const err = allPosts.length > 0 ? '' : <span>No posts to show</span>
+    let pages = [];
+    for (let i = 0; i < (allPosts.length / pagelength); i++) {
+        pages.push(
+            <Pagination.Item key={`page=${i}`} onClick={()=> setPage(i)} active={i === page}>
+            {i + 1}
+            </Pagination.Item>
+        );
+    }
+    if(pages.length >0 && page > pages.length - 1){
+        setPage(pages.length - 1);
+    }
+   
+    const none = allPosts.length > 0 ? '' : <span>No posts to show</span>
     const network = error ? <Card.Text className="text-capitalize text-danger mt-3">{error}</Card.Text> : '';
 
     const title =
@@ -472,15 +476,15 @@ const Admin = (props) => {
             <Card className="admin">
                 <Card.Header>
                     <Stack className="justify-content-between" direction="horizontal">
-                        <span>Posts ({posts.length})</span>
+                        <span>Posts ({allPosts.length})</span>
                         {sort}
                     </Stack>
                 </Card.Header>
                 <Card.Body>
                     <Stack direction="vertical" gap={3}>
-                        {allPosts}
-                        {/* {<Pagination>{pages}</Pagination>} */}
-                        {err}
+                        {allPosts.slice(page * pagelength, (page * pagelength) + pagelength)}
+                        {allPosts.length > pagelength && <Pagination>{pages}</Pagination>}
+                        {none}
                     </Stack>
                 </Card.Body>
             </Card>

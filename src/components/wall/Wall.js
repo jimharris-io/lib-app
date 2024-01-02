@@ -158,6 +158,8 @@ const Wall = (props) => {
         setIdle({...{value:false}});
     }
 
+    // favourites
+
     const currentGrid = (walks[0][posts.length - 1])?.grid || 0;
     const currentThreshold = grids[currentGrid].threshold;
     const remainingSlots = currentThreshold - posts.length;
@@ -170,8 +172,6 @@ const Wall = (props) => {
     ];
 
     let sorted = aggregate.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
-
-    // console.log(posts);
 
     let wallPosts = sorted.map((post, i) => {
         const wallPost = <Post key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
