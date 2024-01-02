@@ -33,17 +33,18 @@ const matcher = new RegExpMatcher({
 
 const PostingApp = (props) => {
 
-    const [ message, setMessage ] = useState('Type your message here');
-    const [ font, setFont ] = useState(0);
-    const [ shape, setShape ] = useState(0);
-    const [ textColour, setTextColour ] = useState(0);
-    const [ backgroundColour, setBackgroundColour ] = useState(1);
-    const [ borderColour, setBorderColour ] = useState(2);
-    const [ idle, setIdle ] = useState({value:true});
+    const [ message, setMessage ] = useState("");
+    const [ font, setFont ] = useState();
+    const [ shape, setShape ] = useState();
+    const [ textColour, setTextColour ] = useState();
+    const [ backgroundColour, setBackgroundColour ] = useState();
+    const [ borderColour, setBorderColour ] = useState();
+    const [ idle, setIdle ] = useState({value: true});
     const [ confirmation, setConfirmation ] = useState(false);
-    const ref = useRef(null);
-
     const [index, setIndex] = useState(0);
+    const [nextDisabled, setNextDisabled] = useState(true);
+    
+    const ref = useRef(null);
 
     useEffect(()=>{
         // console.log("// app: init timeout");
@@ -54,7 +55,7 @@ const PostingApp = (props) => {
             }/* else {
                 console.log("// app: executed timeout, nothing to do");
             }*/
-        }, 1000000)
+        }, 10000)
         return () => {
             // console.log("// app: cleared timeout");
             clearTimeout(timeout);
@@ -141,10 +142,12 @@ const PostingApp = (props) => {
 
     const changeMessage = (event) => {
         setMessage(event.target.value);
+        awake();
     }
 
     const changeFont = (index) => {
         setFont(index);
+        setNextDisabled(false);
     }
 
     const selectFont = fonts.map((thisFont, i) => {
@@ -156,16 +159,27 @@ const PostingApp = (props) => {
     
     const changeShape = (index) => {
         setShape(index);
+        setNextDisabled(false);
     }
 
-    const selectShape = shapes.map((thisShape, i) => {   
-        const fill = colours.find((colour) => colour.value === backgroundColour)?.hex;
+    const selectShape = shapes.map((thisShape, i) => {
+
         let stroke = "none";
         let strokeWidth = 0;
         if(backgroundColour === 5) {
             strokeWidth = 8;
             stroke = colours.find((colour) => colour.value === backgroundColour)?.borderColor;
         }
+
+        let fill;
+        if(backgroundColour){
+            fill = colours.find((colour) => colour.value === backgroundColour)?.hex;
+        } else {
+            fill = "black";
+            stroke = "white";
+            strokeWidth = 2;
+        }
+
         const shapeInfo = shapes.find(s => s.value === thisShape.value);
         const svg = `<svg version="1.1" id="shape" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100%" viewBox="0 0 344 351">
                         <path fill="${fill}" opacity="1.000000" stroke-width="${strokeWidth}" stroke="${stroke}" d="${shapeInfo.path}"/>
@@ -178,21 +192,22 @@ const PostingApp = (props) => {
 
     const changeBackgroundColour = (index, e) => {
         setBackgroundColour(index);
+        setNextDisabled(false);
     }
 
     const selectBackgroundColour = colours.map((colour, i) => {
-        if(colour.value === 5) return;
-        if(colour.value === 6) return;
-        if(colour.value === borderColour) return;
-        if(colour.value === textColour) return;
+        if(colour.value === 5) return; // background cannot be black
+        if(colour.value === 6) return; // background cannot be white
+        if(colour.value === borderColour) return; // cannot be border colour if one chosen
+        if(colour.value === textColour) return; // cannot be text colour if one chosen
         const colourStyle = { borderColor: colour.borderColor, backgroundColor: colour.hex}
         const key = `colour-${colour.label.slice(0, 3)}-${colour.value}`;
         return <Form.Check style={colourStyle} className={`colour-swatch${i === backgroundColour ? ' checked' : ''}`} checked={i === backgroundColour} onChange={(e) => changeBackgroundColour(i, e)} key={key} type="radio" name="backgroundColour"/>
     })
 
     const changeBorderColour = (index) => {
-        setIdle({...{value: false}});
         setBorderColour(index);
+        setNextDisabled(false);
     }
 
     const selectBorderColour = colours.map((colour, i) => {
@@ -205,6 +220,7 @@ const PostingApp = (props) => {
 
     const changeTextColour = (index) => {
         setTextColour(index);
+        setNextDisabled(false);
     }
     
     const selectTextColour = colours.map((colour, i) => {
@@ -219,33 +235,33 @@ const PostingApp = (props) => {
         <Post change={changeMessage} classList="app" font={font} message={message} textColour={textColour} fill={backgroundColour} strokeWidth="8" stroke={borderColour} shape={shape}/>
     </div>
 
-    const textfocus = () => {
-        ref.current.focus();
-    }
+    // const textfocus = () => {
+    //     ref.current.focus();
+    // }
 
-    const dismissKeyboard = (e) => {
-        if (e.key === 'Enter') {
-           e.target.blur();
-        }
-    }
+    // const dismissKeyboard = (e) => {
+    //     if (e.key === 'Enter') {
+    //        e.target.blur();
+    //     }
+    // }
 
     const reset = () => {
         setIndex(0);
         setConfirmation(false);
         setIdle({...{value: true}});
-        setFont(0);
-        setShape(0);
-        setTextColour(0);
-        setBackgroundColour(1);
-        setBorderColour(2);
-        setMessage("Type your message here");
+        setFont();
+        setShape();
+        setTextColour();
+        setBackgroundColour();
+        setBorderColour();
+        setMessage("");
     }
 
     const dismissIdle = async () => {
         awake();
     }
 
-    const awake = async () => {      
+    const awake = async () => {
         setIdle({...{value: false}});
         await updateDoc(doc(getFirestore(props.app), "settings", props.app.options.settingsId), {
             internal: Internal.WAKE_WALL
@@ -262,6 +278,8 @@ const PostingApp = (props) => {
     const dismissConfirmation = () => {
         reset();
     }
+
+
 
     const data = [
         {
@@ -319,7 +337,7 @@ const PostingApp = (props) => {
                     <Stack className="h-100 justify-content-evenly" direction="vertical">
                         <Form.Label>Submit your message</Form.Label>
                         <Stack className="justify-content-center" direction="horizontal" gap={4}>
-                            <button className="submit-button" type="submit"><Submit context="app"/></button>
+                            <button disabled={message === "" && "disabled"} className="submit-button" type="submit"><Submit context={`app ${message === "" && 'disabled'}`}/></button>
                             {/* <Button variant="secondary" onClick={rand}>Rand</Button> */}
                         </Stack>
                     </Stack>
@@ -345,6 +363,20 @@ const PostingApp = (props) => {
             </section>
         </main>
 
+    const slid = (index) => {
+        let disable = false;
+        if(((index === 0 && !shape)
+            || (index === 1 && !backgroundColour)
+            || (index === 2 && !borderColour)
+            || (index === 3 && !textColour)
+            || (index === 4 && font === undefined))
+            && (!nextDisabled)
+        ){
+            disable = true;
+        }
+        setNextDisabled(disable);
+    }
+
     const main =
         <main onClick={awake} className="container-lg" id="posting-app">
             <header>
@@ -352,7 +384,7 @@ const PostingApp = (props) => {
             </header>
             <div id="contents">
 
-                <section onClick={textfocus} id="preview">
+                <section /*onClick={textfocus}*/ id="preview">
                     <div>{preview}</div>
                 </section>
 
@@ -362,11 +394,11 @@ const PostingApp = (props) => {
 
                         <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
 
-                        <Form.Group controlId="message">
-                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+                        <Form.Group className="message-input" controlId="message">
+                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ placeholder="Tap to type your message" autoComplete="off" ref={ref} /*onKeyUp={dismissKeyboard}*/ onChange={changeMessage} value={message} type="text"/>
                         </Form.Group>
 
-                        <Carousel nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        <Carousel className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
                             {data.map((slide, i) => {
                                 return (
                                     <Carousel.Item key={`slide-${i}`}>
@@ -388,8 +420,8 @@ const PostingApp = (props) => {
             </footer>
         </main>
 
-    // if(idle.value) return idleScreen;
-    // if(confirmation) return confirmationScreen;
+    if(idle.value) return idleScreen;
+    if(confirmation) return confirmationScreen;
     return main;
 }
 

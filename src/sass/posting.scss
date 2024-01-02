@@ -1,5 +1,27 @@
 $box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
 
+// ._div {
+//   padding: 0 2rem;
+//   font-size: 2rem;
+// } background-color: black;
+//   color: white; // rgba(255, 255, 255, 0.85)
+//   font-family: 'Söhne Leicht';
+//   border-color: rgba(255, 255, 255, 0.25);
+//   box-shadow: 0px 0px 10px 5px rgba(255, 255, 255, 0.15)
+// ._input { // main#posting-app input[id=message]
+//   background-color: black;
+//   color: white; // rgba(255, 255, 255, 0.85)
+//   font-family: 'Söhne Leicht';
+//   border-color: rgba(255, 255, 255, 0.25);
+//   box-shadow: 0px 0px 10px 5px rgba(255, 255, 255, 0.15)
+//   /* opacity: 0; */
+//   /* position: fixed;*/
+// }
+
+// // <path fill="0" stroke-width="2" stroke="#ffffff" stroke-dasharray="10,10"
+// // textfit div rgba(255, 255, 255, 0.85); font-family: 'Söhne Leicht';
+// // new arrow opacity .25
+
 // modal
 
 .modal-dialog.posting {
@@ -153,9 +175,24 @@ main#posting-app {
     background-repeat: no-repeat;
     background-position: center;
   }
-  input[id="message"] {
-    opacity: 0;
-    position: fixed;
+  div.message-input {
+    padding: 0 2rem;
+    input[id="message"] {
+      font-size: 2rem;
+      background-color: black;
+      font-family: 'Söhne Leicht';
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0px 0px 10px 5px rgba(255, 255, 255, 0.15)
+    }
+    input[id="message"], input[id="message"]::placeholder {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    input[id="message"]::placeholder {
+      text-align: center;
+    }
+    input[id="message"]:focus::placeholder {
+      color: transparent;
+    }
   }
   input[type="radio"] {
     opacity: 0;
@@ -216,6 +253,17 @@ main#posting-app {
       background-repeat: no-repeat;
       height: 6rem;
       width: 12rem;
+      &.disabled {
+        opacity: .25;
+      }
+    }
+  }
+  .carousel.disabled {
+    .carousel-control-next {
+      pointer-events: none;
+      .app.next {
+        opacity: .25;
+      }
     }
   }
 }

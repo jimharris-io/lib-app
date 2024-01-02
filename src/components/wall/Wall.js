@@ -47,7 +47,7 @@ const Wall = (props) => {
             }/* else {
                 console.log("// wall: executed timeout, nothing to do");
             }*/
-        }, 3000000)
+        }, 30000)
         return () => {
             // console.log("// wall: cleared timeout");
             clearTimeout(timeout);

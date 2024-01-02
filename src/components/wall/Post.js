@@ -3,6 +3,7 @@ import { colours, fonts, shapes } from './../../constants/constants';
 import { useState, useCallback, useLayoutEffect, useEffect, useRef } from "react";
 
 import { Textfit } from 'react-textfit';
+import ResizeObserver from 'resize-observer-polyfill';
 
 // bootstrap
 import { Form } from "react-bootstrap";
@@ -21,15 +22,61 @@ const Post = (props) => {
         resizeObserver.observe(node);
     }, [])
  
-    const fontInfo = fonts.find(f => f.value === props.font);
-    const shapeInfo = shapes.find(s => s.value === props.shape);
+    let fontInfo;
+    if(props.font !== undefined){
+        fontInfo = fonts.find(f => f.value === props.font);
+    } else {
+        fontInfo = {
+            label: "",
+            className: "system",
+            lineHeight: 1
+        }
+    }
+
+    let shapeInfo;
+    if(props.shape){
+        shapeInfo = shapes.find(s => s.value === props.shape);
+    } else {
+        shapeInfo = shapes.find(s => s.value === 0);
+    }
+
     const width = parseInt(offsetWidth * shapeInfo.textArea.width);
     const height = parseInt(offsetHeight * shapeInfo.textArea.height);
     const size = height;
-    const textColour = colours.find((colour) => colour.value === props.textColour)?.hex;
-    const fill = colours.find((colour) => colour.value === props.fill)?.hex;
-    const stroke = colours.find((colour) => colour.value === props.stroke)?.hex;
-    
+
+    let textColour;
+    if(props.textColour){
+        textColour = colours.find((colour) => colour.value === props.textColour)?.hex;
+    } else {
+        textColour = `rgba(255, 255, 255, 0.85)`
+    }
+
+    let fill;
+    if(props.fill){
+        fill = colours.find((colour) => colour.value === props.fill)?.hex;
+    } else {
+        fill = 'black';
+    }
+
+    let strokeWidth;
+    let stroke; // borderColour
+    let dashed;
+    if(props.stroke) {
+        stroke = colours.find((colour) => colour.value === props.stroke)?.hex;
+        strokeWidth = props.strokeWidth;
+        dashed = "";
+    } else {
+        stroke = "white";
+        strokeWidth = "2";
+        dashed = "10,10";
+    }
+
+    if(props.fill && !props.stroke){
+        stroke = "none";
+        strokeWidth = "0";
+        dashed = "";
+    }
+        
     const postStyle = {};
 
     postStyle.color = textColour;
@@ -43,7 +90,7 @@ const Post = (props) => {
 
     return <div ref={ref} className={`post ${props.classList}`}>
         <svg version="1.1" id="shape" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 350 350">
-            <path fill={fill} opacity="1.000000" strokeWidth={props.strokeWidth} stroke={stroke} d={shapeInfo.path}/>
+            <path fill={fill} opacity="1.000000" strokeWidth={strokeWidth} strokeDasharray={dashed} stroke={stroke} d={shapeInfo.path}/>
         </svg>
         { size > 0 && <Textfit mode="multi" style={postStyle} className={`test message ${fontInfo.className}`}>{props.message}</Textfit> }
     </div>
