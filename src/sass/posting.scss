@@ -79,8 +79,8 @@ main#posting-app {
   header {
     .header.about {
       font-family: "Söhne Halbfett";
-      margin: 0 2rem;
-      font-size: 2.75vw;
+      // margin: 0 4vw;
+      // font-size: 2.75vw;
       text-align: center;
     }
     // .header.library-on {
@@ -94,20 +94,21 @@ main#posting-app {
   footer {
     .footer {
       &.library-on, &.arts-council, &.bhcc {
-        height: 100%;
+        height: 50%;
         width: calc(100% / 3);
         background-origin: content-box;
+        background-size: contain;
       }
       &.library-on {
         background-position-x: left;
-        padding: 2.25rem 0;
+        background-size: 75%;
       }
       &.arts-council {
         background-position-x: center;
       }
       &.bhcc {
         background-position-x: right;
-        padding: 0.5rem 0;
+        // padding: 0.5rem 0;
       }
     }
   }
@@ -176,9 +177,9 @@ main#posting-app {
     background-position: center;
   }
   div.message-input {
-    padding: 0 2rem;
+    // padding: 0 2rem;
     input[id="message"] {
-      font-size: 2rem;
+      // font-size: 2rem;
       background-color: black;
       font-family: 'Söhne Leicht';
       border-color: rgba(255, 255, 255, 0.25);
@@ -324,6 +325,7 @@ main#posting-app {
 // structure
 
 main#posting-app {
+  background: rgba(255, 0, 0, .25);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -333,6 +335,7 @@ main#posting-app {
 main#posting-app header,
 main#posting-app footer,
 main#posting-app div#contents section#preview,
+main#posting-app div#contents section#message,
 main#posting-app div#contents section#editor {
   display: flex;
   justify-content: center;
@@ -341,13 +344,13 @@ main#posting-app div#contents section#editor {
 
 main#posting-app header {
   // background: rgba(255, 0, 0, 0.25);
-  min-height: 10vh;
+  // height: 15vh;
   justify-content: space-between;
 }
 
 main#posting-app footer {
   // background: rgba(0, 255, 0, 0.25);
-  min-height: 10vh;
+  // height: 10vh;
   justify-content: space-between;
 }
 
@@ -357,12 +360,12 @@ main#posting-app div#contents {
 }
 
 main#posting-app div#contents section#preview {
-  // background: rgba(255, 255, 0, 0.25);
+  background: rgba(255, 255, 0, 0.25);
   flex-grow: 1;
 }
 
 main#posting-app div#contents section#editor {
-  // background: rgba(0, 255, 255, 0.25);
+  background: rgba(0, 255, 255, 0.25);
   flex-grow: 1;
 }
 
@@ -418,23 +421,101 @@ main#posting-app div#contents section#editor .carousel .carousel-item .carousel-
   }
 }
 
-@media only screen and (orientation: landscape) {
-  main#posting-app header, main#posting-app footer {
-    min-height: 20vh;
-  }
-}
+// @media only screen and (orientation: landscape) {
+//   main#posting-app header, main#posting-app footer {
+//     min-height: 20vh;
+//   }
+// }
 
-@media only screen and (min-width: 769px) and (max-width: 1199px) and (orientation: landscape) {
-  main#posting-app header, main#posting-app footer {
-    min-height: 15vh;
-  }
-}
+// @media only screen and (min-width: 769px) and (max-width: 1199px) and (orientation: landscape) {
+//   main#posting-app header, main#posting-app footer {
+//     min-height: 15vh;
+//   }
+// }
 
-@media only screen and (min-width: 1200px) {
-  main#posting-app {
-    height: auto;
+// @media only screen and (min-width: 1200px) {
+//   main#posting-app {
+//     height: auto;
+//   }
+//   main#posting-app header, main#posting-app footer {
+//     min-height: auto;
+//   }
+// }
+
+//
+
+main#posting-app {
+
+  header {
+    height: 15vh;
+    .header.about {
+      margin: 0 4vw;
+      font-size: 1rem;
+    }
   }
-  main#posting-app header, main#posting-app footer {
-    min-height: auto;
+
+  footer {
+    height: 10vh;
   }
+
+  div.message-input {
+    padding: 0 4vw;
+    input[id="message"] {
+      font-size: 1.25rem;
+    }
+  }
+
+  //older ipads issue
+  div#contents section#editor {
+    position: relative;
+    form {
+      position: absolute;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+
+    background: rgba(0, 0, 255, .25);
+
+    header .header.about {
+      margin: 0 3.5vw;
+      font-size: 1.25rem;
+    }
+
+    div.message-input {
+      padding: 0 3.5vw;
+      input[id="message"] {
+        font-size: 1.5rem;
+      }
+    }
+
+  }
+
+  @include media-breakpoint-up(md) {
+
+    background: rgba(0, 255, 0, .25);
+
+    header {
+      height: 10vh;
+      .header.about {
+        margin: 0 2vw;
+        font-size: 1.5rem;
+      }
+    }
+
+    div.message-input {
+      padding: 0 2vw;
+      input[id="message"] {
+        font-size: 1.75rem;
+      }
+    }
+
+  }
+
+  @include media-breakpoint-up(lg) {
+
+    background: rgba(0, 255, 255, .25);
+
+  }
+
 }

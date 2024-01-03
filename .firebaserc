@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "lib-app-2ed3c"
-  }
+  },
+  "targets": {
+    "lib-app-2ed3c": {
+      "hosting": {
+        "development": [
+          "lib-app-2ed3c"
+        ],
+        "production": [
+          "lib-app-production"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

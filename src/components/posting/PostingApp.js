@@ -39,7 +39,7 @@ const PostingApp = (props) => {
     const [ textColour, setTextColour ] = useState();
     const [ backgroundColour, setBackgroundColour ] = useState();
     const [ borderColour, setBorderColour ] = useState();
-    const [ idle, setIdle ] = useState({value: true});
+    const [ idle, setIdle ] = useState({value: false});
     const [ confirmation, setConfirmation ] = useState(false);
     const [index, setIndex] = useState(0);
     const [nextDisabled, setNextDisabled] = useState(true);
@@ -55,7 +55,7 @@ const PostingApp = (props) => {
             }/* else {
                 console.log("// app: executed timeout, nothing to do");
             }*/
-        }, 10000)
+        }, 1000000)
         return () => {
             // console.log("// app: cleared timeout");
             clearTimeout(timeout);
@@ -84,7 +84,12 @@ const PostingApp = (props) => {
     const saveHandler = async (event) => {
         event.preventDefault();
 
-        if(matcher.hasMatch(message)){
+        return
+
+        if(index !== 5) return; // handle ios submitting on return key
+        if(message === "") return;
+
+        if(new String().matchAll && matcher.hasMatch(message)){
             warnProfanity();
             return;
         }
@@ -239,11 +244,11 @@ const PostingApp = (props) => {
     //     ref.current.focus();
     // }
 
-    // const dismissKeyboard = (e) => {
-    //     if (e.key === 'Enter') {
-    //        e.target.blur();
-    //     }
-    // }
+    const dismissKeyboard = (e) => {
+        if (e.key === 'Enter') {
+           e.target.blur();
+        }
+    }
 
     const reset = () => {
         setIndex(0);
@@ -278,8 +283,6 @@ const PostingApp = (props) => {
     const dismissConfirmation = () => {
         reset();
     }
-
-
 
     const data = [
         {
@@ -377,6 +380,10 @@ const PostingApp = (props) => {
         setNextDisabled(disable);
     }
 
+    const foo = () => {
+        console.log("// submit");
+    }
+
     const main =
         <main onClick={awake} className="container-lg" id="posting-app">
             <header>
@@ -395,10 +402,10 @@ const PostingApp = (props) => {
                         <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
 
                         <Form.Group className="message-input" controlId="message">
-                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ placeholder="Tap to type your message" autoComplete="off" ref={ref} /*onKeyUp={dismissKeyboard}*/ onChange={changeMessage} value={message} type="text"/>
+                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
                         </Form.Group>
 
-                        <Carousel className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        {/* <Carousel className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
                             {data.map((slide, i) => {
                                 return (
                                     <Carousel.Item key={`slide-${i}`}>
@@ -408,7 +415,7 @@ const PostingApp = (props) => {
                                     </Carousel.Item>
                                 )
                             })}
-                        </Carousel>
+                        </Carousel> */}
                     </Form>
 
                 </section>
