@@ -1,5 +1,3 @@
-$box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
-
 // ._div {
 //   padding: 0 2rem;
 //   font-size: 2rem;
@@ -75,41 +73,43 @@ $box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
   color: white;
 }
 
-main#posting-app {
-  header {
-    .header.about {
-      font-family: "Söhne Halbfett";
-      // margin: 0 4vw;
-      // font-size: 2.75vw;
-      text-align: center;
+// main#posting-app {
+//   header {
+//     .header.about {
+//       // font-family: "Söhne Halbfett";
+//       // // margin: 0 4vw;
+//       // // font-size: 2.75vw;
+//       // text-align: center;
+//       // p {
+//       //   margin: 0;
+//       // }
+//     }
+//     // .header.library-on {
+//     //   height: 100%;
+//     //   width: 30%;
+//     //   padding: 1rem 0;
+//     //   background-origin: content-box;
+//     //   background-position-x: right;
+//     // }
+//   }
+
+// }
+
+footer#posting-app-footer {
+  .footer {
+    &.library-on, &.arts-council, &.bhcc {
+      background-origin: content-box;
+      background-size: contain;
     }
-    // .header.library-on {
-    //   height: 100%;
-    //   width: 30%;
-    //   padding: 1rem 0;
-    //   background-origin: content-box;
-    //   background-position-x: right;
-    // }
-  }
-  footer {
-    .footer {
-      &.library-on, &.arts-council, &.bhcc {
-        height: 50%;
-        width: calc(100% / 3);
-        background-origin: content-box;
-        background-size: contain;
-      }
-      &.library-on {
-        background-position-x: left;
-        background-size: 75%;
-      }
-      &.arts-council {
-        background-position-x: center;
-      }
-      &.bhcc {
-        background-position-x: right;
-        // padding: 0.5rem 0;
-      }
+    &.library-on {
+      background-position-x: left;
+      background-size: 75%;
+    }
+    &.arts-council {
+      background-position-x: center;
+    }
+    &.bhcc {
+      background-position-x: right;
     }
   }
 }
@@ -143,90 +143,30 @@ main#posting-app, .modal {
 
 // steps
 main#posting-app {
-  .colour-swatch {
-    display: inline-block;
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 2rem;
-    border: 1px solid;
-    &.checked {
-      box-shadow: $box-shadow;
-    }
-    &.unavailable {
-      opacity: .25;
-    }
-  }
-  // temp fix
-  .font-select .font-label.typeface-2 {
-    position: relative;
-    top: -3px;
-  }
-  .font-select {
-    padding: 1rem 0;
-    opacity: .34;
-    font-size: 2rem;
-    &.checked {
-      opacity: 1;
-    }
-  }
-  .shape {
-    width: 5.5rem;
-    height: 5.5rem;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-  div.message-input {
-    // padding: 0 2rem;
-    input[id="message"] {
-      // font-size: 2rem;
-      background-color: black;
-      font-family: 'Söhne Leicht';
-      border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0px 0px 10px 5px rgba(255, 255, 255, 0.15)
-    }
-    input[id="message"], input[id="message"]::placeholder {
-      color: rgba(255, 255, 255, 0.85);
-    }
-    input[id="message"]::placeholder {
-      text-align: center;
-    }
-    input[id="message"]:focus::placeholder {
-      color: transparent;
-    }
-  }
-  input[type="radio"] {
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-  input[type='range'] {
-    color: red;
-  }
-  label {
-    width: 67vw;
-    text-align: center;
-    font-family: "Söhne Halbfett", serif;
-    font-size: 1.5rem;
-    pointer-events: none;
-  }
-  .carousel-control-prev, .carousel-control-next {
-    height: 6rem;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 1 !important;
-  }
-  .app.next, .app.previous, .app.cancel, .app.continue, .app.ok {
+  // shared
+
+
+
+  // input[type='range'] {
+  //   color: red;
+  // }
+
+  // .carousel-control-prev, .carousel-control-next {
+  //   height: 6rem;
+  //   top: 50%;
+  //   transform: translateY(-50%);
+  //   opacity: 1 !important;
+  // }
+  .app.cancel, .app.continue, .app.ok {
     display: inline-block;
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 100% 100%;
   }
-  .app.next, .app.previous {
-    width: 3rem;
-    height: 3rem;
-  }
+  // .app.next, .app.previous {
+  //   width: 2.5rem;
+  //   height: 2.5rem;
+  // }
   .app.ok {
     width: 6rem;
     height: 6rem;
@@ -235,38 +175,7 @@ main#posting-app {
     width: 6rem;
     height: 12rem;
   }
-  .app.next {
-    background-image: url('./../media/png/next.png');
-  }
-  .app.previous {
-    background-image: url('./../media/png/previous.png');
-  }
-  .submit-button {
-    background-color: black; /* Green */
-    border: none;
-    color: rgba(0, 0, 0, 0);
-    text-align: center;
-    text-decoration: none;
-    .app.submit {
-      background-image: url('./../media/png/submit.png');
-      background-position: center;
-      background-size: contain;
-      background-repeat: no-repeat;
-      height: 6rem;
-      width: 12rem;
-      &.disabled {
-        opacity: .25;
-      }
-    }
-  }
-  .carousel.disabled {
-    .carousel-control-next {
-      pointer-events: none;
-      .app.next {
-        opacity: .25;
-      }
-    }
-  }
+  
 }
 
 // screens
@@ -322,80 +231,11 @@ main#posting-app {
   }
 }
 
-// structure
-
-main#posting-app {
-  background: rgba(255, 0, 0, .25);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  color: white;
-}
-
-main#posting-app header,
-main#posting-app footer,
-main#posting-app div#contents section#preview,
-main#posting-app div#contents section#message,
-main#posting-app div#contents section#editor {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-main#posting-app header {
-  // background: rgba(255, 0, 0, 0.25);
-  // height: 15vh;
-  justify-content: space-between;
-}
-
-main#posting-app footer {
-  // background: rgba(0, 255, 0, 0.25);
-  // height: 10vh;
-  justify-content: space-between;
-}
-
-main#posting-app div#contents {
-  flex-grow: 1;
-  display: flex;
-}
-
-main#posting-app div#contents section#preview {
-  background: rgba(255, 255, 0, 0.25);
-  flex-grow: 1;
-}
-
-main#posting-app div#contents section#editor {
-  background: rgba(0, 255, 255, 0.25);
-  flex-grow: 1;
-}
-
-main#posting-app div#contents section#editor .carousel {
-  width: 100%;
-  height: 100%;
-}
-
-main#posting-app div#contents section#editor .carousel,
-main#posting-app div#contents section#editor .carousel .carousel-inner,
-main#posting-app div#contents section#editor .carousel .carousel-inner .carousel-item {
-  height: 100%;
-}
-
-main#posting-app div#contents section#editor .carousel .carousel-item .carousel-item-contents {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-main#posting-app div#contents section#editor .carousel .carousel-item .carousel-item-contents div {
-  /* background: rgba(0, 255, 255, .25); */
-}
-
-@media (orientation: portrait) {
-  main#posting-app div#contents {
-    flex-direction: column;
-  }
-}
+// @media (orientation: portrait) {
+//   main#posting-app div#contents {
+//     flex-direction: column;
+//   }
+// }
 
 /* @media (any-pointer: fine) {
     main#posting-app div#contents section#editor .touch-device {
@@ -409,17 +249,13 @@ main#posting-app div#contents section#editor .carousel .carousel-item .carousel-
     }
   } */
 
-@media only screen and (orientation: landscape) {
-  main#posting-app div#contents section#editor, main#posting-app div#contents section#preview {
-    width: 50%;
-  }
-}
+// @media only screen and (orientation: landscape) {
+//   main#posting-app div#contents section#editor, main#posting-app div#contents section#preview {
+//     width: 50%;
+//   }
+// }
 
-@media only screen and (orientation: portrait) {
-  main#posting-app div#contents section#editor, main#posting-app div#contents section#preview {
-    height: 50%;
-  }
-}
+
 
 // @media only screen and (orientation: landscape) {
 //   main#posting-app header, main#posting-app footer {
@@ -444,78 +280,3 @@ main#posting-app div#contents section#editor .carousel .carousel-item .carousel-
 
 //
 
-main#posting-app {
-
-  header {
-    height: 15vh;
-    .header.about {
-      margin: 0 4vw;
-      font-size: 1rem;
-    }
-  }
-
-  footer {
-    height: 10vh;
-  }
-
-  div.message-input {
-    padding: 0 4vw;
-    input[id="message"] {
-      font-size: 1.25rem;
-    }
-  }
-
-  //older ipads issue
-  div#contents section#editor {
-    position: relative;
-    form {
-      position: absolute;
-    }
-  }
-
-  @include media-breakpoint-up(sm) {
-
-    background: rgba(0, 0, 255, .25);
-
-    header .header.about {
-      margin: 0 3.5vw;
-      font-size: 1.25rem;
-    }
-
-    div.message-input {
-      padding: 0 3.5vw;
-      input[id="message"] {
-        font-size: 1.5rem;
-      }
-    }
-
-  }
-
-  @include media-breakpoint-up(md) {
-
-    background: rgba(0, 255, 0, .25);
-
-    header {
-      height: 10vh;
-      .header.about {
-        margin: 0 2vw;
-        font-size: 1.5rem;
-      }
-    }
-
-    div.message-input {
-      padding: 0 2vw;
-      input[id="message"] {
-        font-size: 1.75rem;
-      }
-    }
-
-  }
-
-  @include media-breakpoint-up(lg) {
-
-    background: rgba(0, 255, 255, .25);
-
-  }
-
-}

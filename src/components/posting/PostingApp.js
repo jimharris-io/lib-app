@@ -286,64 +286,69 @@ const PostingApp = (props) => {
 
     const data = [
         {
-            jsx: <Form.Group className="h-100" controlId="shape">
-                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+            jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="shape">
+                    {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
                         <Form.Label><span className="sohne-leicht">Step one</span><br/>Choose a shape</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                        <Stack className="justify-content-center" direction="horizontal">
                             {selectShape}
+                            {/* <div className="text-center">shape</div> */}
                         </Stack>
-                    </Stack>
+                    {/* </Stack> */}
                 </Form.Group>
         },
         {
-            jsx: <Form.Group className="h-100" controlId="backgroundColour">
-                    <Stack className="h-100 justify-content-evenly" direction="vertical">
-                        <Form.Label><span className="sohne-leicht">Step two</span><br/>Choose a colour for the shape's background</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+            jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="backgroundColour">
+                    {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
+                        <Form.Label><span className="sohne-leicht">Step two</span><br/>Choose a background colour</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal">
                             {selectBackgroundColour}
+                            {/* <div className="text-center">background colour</div> */}
                         </Stack>
-                    </Stack>
+                    {/* </Stack> */}
                 </Form.Group>
         },
         {
-            jsx: <Form.Group className="h-100" controlId="borderColour">
-                    <Stack className="h-100 justify-content-evenly" direction="vertical">
-                        <Form.Label><span className="sohne-leicht">Step three</span><br/>Choose a colour for the shape's border</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+            jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="borderColour">
+                    {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
+                        <Form.Label><span className="sohne-leicht">Step three</span><br/>Choose a border colour</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal">
                             {selectBorderColour}
+                            {/* <div className="text-center">border colour</div> */}
                         </Stack>
-                    </Stack>
+                    {/* </Stack> */}
                 </Form.Group>
         },
         {
-            jsx:  <Form.Group className="h-100" controlId="textColour">
-                    <Stack className="h-100 justify-content-evenly" direction="vertical">
-                        <Form.Label><span className="sohne-leicht">Step four</span><br/>Choose a colour for your message</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+            jsx:  <Form.Group className="h-100 carousel-item-contents-container" controlId="textColour">
+                    {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
+                        <Form.Label><span className="sohne-leicht">Step four</span><br/>Choose a text colour</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal">
                             {selectTextColour}
+                            {/* <div className="text-center">text colour</div> */}
                         </Stack>
-                    </Stack>
+                    {/* </Stack> */}
                 </Form.Group>
         },
         {
-            jsx: <Form.Group className="h-100" controlId="font">
-                    <Stack className="h-100 justify-content-evenly" direction="vertical">
-                        <Form.Label><span className="sohne-leicht">Step five</span><br/>Choose a font for your message</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+            jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="font">
+                    {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
+                        <Form.Label><span className="sohne-leicht">Step five</span><br/>Choose a font</Form.Label>
+                        <Stack className="justify-content-center" direction="horizontal">
                             {selectFont}
+                            {/* <div className="text-center">font</div> */}
                         </Stack>
-                    </Stack>
+                    {/* </Stack> */}
                 </Form.Group>
         },
         {
-            jsx: <Form.Group className="h-100" controlId="font">
-                    <Stack className="h-100 justify-content-evenly" direction="vertical">
+            jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="font">
+                    {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
                         <Form.Label>Submit your message</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal" gap={4}>
+                        <Stack className="justify-content-center" direction="horizontal">
                             <button disabled={message === "" && "disabled"} className="submit-button" type="submit"><Submit context={`app ${message === "" && 'disabled'}`}/></button>
-                            {/* <Button variant="secondary" onClick={rand}>Rand</Button> */}
+                            {/* <div className="text-center">submit</div> */}
                         </Stack>
-                    </Stack>
+                    {/* </Stack> */}
                 </Form.Group>
         }
     ]
@@ -385,27 +390,32 @@ const PostingApp = (props) => {
     }
 
     const main =
-        <main onClick={awake} className="container-lg" id="posting-app">
-            <header>
-                <About context="header"/>
-            </header>
-            <div id="contents">
+        <Form className="w-100 h-100" onSubmit={saveHandler}>
+            <main onClick={awake} className="container-md" id="posting-app">
+                <header>
+                    <About context="header"/>
+                </header>
 
-                <section /*onClick={textfocus}*/ id="preview">
-                    <div>{preview}</div>
-                </section>
+                <div id="contents">
 
-                <section id="editor">
+                    <section /*onClick={textfocus}*/ id="preview">
+                        <div>{preview}</div>
+                        {/* <span>preview</span> */}
+                    </section>
 
-                    <Form className="w-100 h-100" onSubmit={saveHandler}>
+                    <section id="message">
+                        <Form.Group className="message-input" controlId="message">
+                            <Form.Control enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+                        </Form.Group>
+                    </section>
+
+                    <section id="editor">
 
                         <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
 
-                        <Form.Group className="message-input" controlId="message">
-                            <Form.Control /*pattern="[a-zA-Z\s&\d]"*/ enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
-                        </Form.Group>
+                        {/* <span>carousel</span> */}
 
-                        {/* <Carousel className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        <Carousel className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
                             {data.map((slide, i) => {
                                 return (
                                     <Carousel.Item key={`slide-${i}`}>
@@ -415,17 +425,23 @@ const PostingApp = (props) => {
                                     </Carousel.Item>
                                 )
                             })}
-                        </Carousel> */}
-                    </Form>
+                        </Carousel>
+                        
+                    </section>
+                </div>
 
-                </section>
-            </div>
-            <footer onClick={rand}>
-                <LibraryOn context="footer"/>
-                <ArtsCouncil context="footer"/>
-                <Bhcc context="footer"/>
+                <div></div>
+                
+            </main>
+            <footer id="posting-app-footer" onClick={rand}>
+                <div className="container-md h-100" >
+                    <LibraryOn context="footer"/>
+                    <ArtsCouncil context="footer"/>
+                    <Bhcc context="footer"/>
+                </div>
             </footer>
-        </main>
+
+        </Form>
 
     if(idle.value) return idleScreen;
     if(confirmation) return confirmationScreen;

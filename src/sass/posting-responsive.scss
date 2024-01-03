@@ -1,0 +1,396 @@
+// // debug
+
+// main#posting-app {
+//   background: rgba(255, 0, 0, 0.25);
+//   div#contents section#preview {
+//     background: rgba(255, 255, 0, 0.25);
+//   }
+//   div#contents section#editor {
+//     background: rgba(0, 255, 255, 0.25);
+//     border: 1px solid red;
+//   }
+//   div#contents
+//     section#editor
+//     .carousel
+//     .carousel-item
+//     .carousel-item-contents
+//     > div {
+//     background: rgba(0, 255, 255, 0.25);
+//   }
+//   @include media-breakpoint-up(sm) {
+//     background: rgba(0, 0, 255, 0.25);
+//   }
+//   @include media-breakpoint-up(md) {
+//     background: rgba(0, 255, 0, 0.25);
+//   }
+//   @include media-breakpoint-up(lg) {
+//     background: rgba(0, 255, 255, 0.25);
+//   }
+// }
+
+// structure
+
+main#posting-app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 15vh 1fr 10vh;
+  gap: 0px;
+  @include media-breakpoint-up(sm) {
+    grid-template-rows: 12.5vh 1fr 10vh;
+  }
+  @include media-breakpoint-up(md) {
+    grid-template-rows: 12vh 1fr 10vh;
+  }
+  @include media-breakpoint-up(lg) {
+    grid-template-rows: 10vh 1fr 10vh;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    .header.about {
+      margin: 0 4vw;
+      @include media-breakpoint-up(sm) {
+        margin: 0 3.5vw;
+      }
+      @include media-breakpoint-up(md) {
+        margin: 0 2vw;
+      }
+    }
+  }
+  div#contents {
+    display: grid;
+    grid-template-rows: 1fr 3rem 1fr;
+    @include media-breakpoint-up(sm) {
+      grid-template-rows: 1fr 3.5rem 1fr;
+    }
+    @include media-breakpoint-up(md) {
+      grid-template-rows: 1fr 4rem 1fr;
+    }
+    section#message {
+      display: flex;
+      align-items: center;
+      div.message-input {
+        width: 100%;
+        padding: 0 4vw;
+        @include media-breakpoint-up(sm) {
+          padding: 0 3.5vw;
+        }
+        @include media-breakpoint-up(md) {
+          padding: 0 2vw;
+        }
+      }
+    }
+    section#preview {
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      .post.app svg {
+        width: 170px;
+        @include media-breakpoint-up(sm) {
+          width: 270px;
+        }
+        @include media-breakpoint-up(md) {
+          width: 300px;
+        }
+        @include media-breakpoint-up(lg) {
+          width: 450px;
+        }
+      }
+    }
+    section#editor {
+      .carousel {
+        height: 100%;
+        width: 100%;
+        .carousel-inner,
+        .carousel-inner .carousel-item,
+        .carousel-item .carousel-item-contents {
+          height: 100%;
+          .carousel-item-contents-container {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+footer#posting-app-footer {
+  position: absolute;
+  bottom: 0;
+  height: 10vh;
+  width: 100%;
+  div {
+    display: flex;
+    align-items: center;
+  }
+  .footer {
+    &.library-on,
+    &.arts-council,
+    &.bhcc {
+      height: 50%;
+      width: calc(100% / 3);
+    }
+  }
+}
+
+// carousel
+
+main#posting-app div#contents section#editor {
+  .carousel {
+    &.disabled {
+      .carousel-control-next {
+        pointer-events: none;
+        .app.next {
+          opacity: 0.25;
+        }
+      }
+    }
+    .app.next,
+    .app.previous {
+      display: inline-block;
+      background-repeat: no-repeat;
+      background-position: 50%;
+      background-size: 100% 100%;
+    }
+    .app.next {
+      background-image: url("./../media/png/next.png");
+    }
+    .app.previous {
+      background-image: url("./../media/png/previous.png");
+    }
+    .carousel-item-contents-container {
+      label {
+        width: 100%;
+        pointer-events: none;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// steps
+
+main#posting-app div#contents section#editor {
+  // colour swatch
+  .colour-swatch {
+    display: inline-block;
+    border: 1px solid;
+    &.checked {
+      box-shadow: 0px 0px 25px 10px rgba(255, 255, 255, 0.375);
+    }
+  }
+  input[type="radio"] {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  // shape
+  .shape {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  // font
+  .font-select {
+    opacity: 0.34;
+    &.checked {
+      opacity: 1;
+    }
+  }
+  // submit
+  .submit-button {
+    background-color: black;
+    border: none;
+    color: rgba(0, 0, 0, 0);
+    text-align: center;
+    text-decoration: none;
+    .app.submit {
+      background-image: url("./../media/png/submit.png");
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      &.disabled {
+        // opacity: .25;
+      }
+    }
+  }
+}
+
+// steps responsive
+
+main#posting-app div#contents section#editor {
+  // colour swatch
+  .colour-swatch {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 1.375rem;
+    margin: 0 0.25rem;
+    @include media-breakpoint-up(sm) {
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: 1.625rem;
+      margin: 0 0.5rem;
+    }
+    @include media-breakpoint-up(md) {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 2rem;
+      margin: 0 1rem;
+    }
+    @include media-breakpoint-up(lg) {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 2.5rem;
+      margin: 0 1rem;
+    }
+  }
+  // shape
+  .shape {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 0.5rem;
+    @include media-breakpoint-up(sm) {
+      width: 4.25rem;
+      height: 4.25rem;
+      margin: 0 0.75rem;
+    }
+    @include media-breakpoint-up(md) {
+      width: 6rem;
+      height: 6rem;
+      margin: 0 1.25rem;
+    }
+    @include media-breakpoint-up(lg) {
+      width: 7rem;
+      height: 7rem;
+      margin: 0 1.75rem;
+    }
+  }
+  // font
+  .font-select {
+    font-size: 1.5rem;
+    margin: 0 0.25rem;
+    @include media-breakpoint-up(sm) {
+      font-size: 2rem;
+      margin: 0 0.75rem;
+    }
+    @include media-breakpoint-up(md) {
+      font-size: 2.5rem;
+      margin: 0 0.75rem;
+    }
+    @include media-breakpoint-up(lg) {
+      font-size: 3.25rem;
+      margin: 0 1rem;
+    }
+  }
+  // submit
+  .submit-button {
+    .app.submit {
+      height: 4rem;
+      width: 8rem;
+      @include media-breakpoint-up(sm) {
+        height: 4rem;
+        width: 11rem;
+      }
+      @include media-breakpoint-up(md) {
+        height: 6rem;
+        width: 14rem;
+      }
+      @include media-breakpoint-up(lg) {
+        height: 8rem;
+        width: 18rem;
+      }
+    }
+  }
+}
+
+// typography
+
+main#posting-app {
+    color: white;
+  header {
+    .header.about {
+      font-size: 1rem;
+      font-family: "Söhne Halbfett";
+      text-align: center;
+      p {
+        margin: 0;
+      }
+      @include media-breakpoint-up(sm) {
+        font-size: 1.25rem;
+      }
+      @include media-breakpoint-up(md) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  div#contents {
+    section#message {
+      div.message-input {
+        input[id="message"],
+        input[id="message"]::placeholder {
+          color: rgba(255, 255, 255, 0.85);
+        }
+        input[id="message"]::placeholder {
+          text-align: center;
+        }
+        input[id="message"]:focus::placeholder {
+          color: transparent;
+        }
+        input[id="message"] {
+          font-size: 1.25rem;
+          font-family: "Söhne Leicht";
+          background-color: black;
+          border-color: rgba(255, 255, 255, 0.25);
+          box-shadow: 0px 0px 10px 5px rgba(255, 255, 255, 0.15);
+          @include media-breakpoint-up(sm) {
+            font-size: 1.5rem;
+          }
+          @include media-breakpoint-up(md) {
+            font-size: 1.75rem;
+          }
+        }
+      }
+    }
+    section#editor {
+      .carousel {
+        .app.next,
+        .app.previous {
+          width: 2.5rem;
+          height: 2.5rem;
+          @include media-breakpoint-up(sm) {
+            width: 3rem;
+            height: 3rem;
+          }
+          @include media-breakpoint-up(md) {
+            width: 3.5rem;
+            height: 3.5rem;
+          }
+          @include media-breakpoint-up(lg) {
+            width: 4rem;
+            height: 4rem;
+          }
+        }
+        .carousel-item-contents-container {
+          label {
+            text-align: center;
+            font-family: "Söhne Halbfett", serif;
+            font-size: 1.25rem;
+            @include media-breakpoint-up(sm) {
+              font-size: 1.5rem;
+            }
+            @include media-breakpoint-up(md) {
+              font-size: 1.75rem;
+            }
+            @include media-breakpoint-up(lg) {
+              font-size: 2rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
