@@ -1,6 +1,30 @@
 // // debug
 
 // main#posting-app {
+//   &-idle, &-confirmation {
+//     background: rgba(255, 0, 0, 0.25);
+//     @include media-breakpoint-up(sm) {
+//       background: rgba(0, 0, 255, 0.25);
+//     }
+//     @include media-breakpoint-up(md) {
+//       background: rgba(0, 255, 0, 0.25);
+//     }
+//     @include media-breakpoint-up(lg) {
+//       background: rgba(0, 255, 255, 0.25);
+//     }
+//   }
+//   .portrait-only {
+//     background: darkred;
+//     @include media-breakpoint-up(sm) {
+//       background: rgba(0, 0, 255, 1);
+//     }
+//     @include media-breakpoint-up(md) {
+//       background: rgba(0, 255, 0, 1);
+//     }
+//     @include media-breakpoint-up(lg) {
+//       background: rgba(0, 255, 255, 1);
+//     }
+//   }
 //   background: rgba(255, 0, 0, 0.25);
 //   div#contents section#preview {
 //     background: rgba(255, 255, 0, 0.25);
@@ -129,6 +153,7 @@ footer#posting-app-footer {
   .footer {
     &.library-on,
     &.arts-council,
+    &.everyones,
     &.bhcc {
       height: 50%;
       width: calc(100% / 3);
@@ -200,6 +225,9 @@ main#posting-app div#contents section#editor {
     &.checked {
       opacity: 1;
     }
+    .typeface-2 {
+      padding-bottom: 0.125em;
+    }
   }
   // submit
   .submit-button {
@@ -214,7 +242,7 @@ main#posting-app div#contents section#editor {
       background-size: contain;
       background-repeat: no-repeat;
       &.disabled {
-        // opacity: .25;
+        opacity: 0.25;
       }
     }
   }
@@ -307,10 +335,254 @@ main#posting-app div#contents section#editor {
   }
 }
 
+// other screens
+
+main#posting-app-confirmation .portrait-only,
+main#posting-app-idle .portrait-only,
+main#posting-app .portrait-only {
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  .warning.everyones {
+    width: 14.5rem;
+    height: 5.5rem;
+    margin-bottom: 0.125em;
+    @include media-breakpoint-up(md) {
+      width: 16.5rem;
+      height: 6.5rem;
+      margin-bottom: 0.1875em;
+    }
+    @include media-breakpoint-up(lg) {
+      width: 20.5rem;
+      height: 8rem;
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+@media only screen and (max-width: 1199px) and (orientation: landscape) {
+  main#posting-app-confirmation .portrait-only,
+  main#posting-app-idle .portrait-only,
+  main#posting-app .portrait-only {
+    display: flex;
+  }
+}
+
+main#posting-app {
+  &-idle,
+  &-confirmation {
+    height: 100%;
+    section {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+  }
+  &-idle {
+    .idle {
+      &.about {
+        width: 75%;
+      }
+      &.everyones {
+        width: 13rem;
+        height: 5rem;
+      }
+      @include media-breakpoint-up(sm) {
+        &.everyones {
+          width: 15rem;
+          height: 6rem;
+        }
+      }
+      @include media-breakpoint-up(md) {
+        &.everyones {
+          width: 17rem;
+          height: 8rem;
+        }
+      }
+      @include media-breakpoint-up(lg) {
+        &.about {
+          width: 50%;
+        }
+        &.everyones {
+          width: 22rem;
+          height: 10rem;
+        }
+      }
+    }
+  }
+  &-confirmation {
+    .confirmation {
+      &.join {
+        width: 67%;
+      }
+      &.everyones {
+        width: 13rem;
+        height: 5rem;
+      }
+      @include media-breakpoint-up(sm) {
+        &.join {
+          width: 50%;
+        }
+        &.everyones {
+          width: 15rem;
+          height: 6rem;
+        }
+      }
+      @include media-breakpoint-up(md) {
+        &.everyones {
+          width: 17rem;
+          height: 8rem;
+        }
+      }
+      @include media-breakpoint-up(lg) {
+        &.everyones {
+          width: 22rem;
+          height: 10rem;
+        }
+      }
+    }
+  }
+}
+
+// modal
+
+.modal-dialog.posting {
+  .modal- {
+    &header {
+      .btn-close {
+        display: none;
+      }
+    }
+    &footer {
+      .app.ok {
+        display: inline-block;
+        background-repeat: no-repeat;
+        background-position: 50%;
+        background-size: 100% 100%;
+        cursor: pointer;
+        background-image: url("./../media/png/ok.png");
+      }
+    }
+    &header,
+    &footer {
+      border: none;
+      justify-content: center;
+    }
+    &content {
+      background-color: #333333;
+    }
+    &title {
+      width: 100%;
+    }
+  }
+}
+
 // typography
 
 main#posting-app {
+  color: white;
+  .portrait-only {
+    span {
+      font-family: "Söhne Leicht";
+      font-size: 1.5rem;
+      margin-top: 0.125rem;
+      @include media-breakpoint-up(md) {
+        font-size: 1.75rem;
+        margin-top: 0.1875em;
+      }
+      @include media-breakpoint-up(lg) {
+        font-size: 2rem;
+        margin-top: 0.25em;
+      }
+    }
+  }
+  &-idle,
+  &-confirmation {
     color: white;
+  }
+  &-idle {
+    span.idle {
+      color: white;
+      font-family: "Söhne Leicht";
+      opacity: 0.75;
+      font-size: 1.25rem;
+      @include media-breakpoint-up(sm) {
+        font-size: 1.375rem;
+      }
+      @include media-breakpoint-up(md) {
+        font-size: 1.5rem;
+      }
+      @include media-breakpoint-up(lg) {
+        font-size: 1.625rem;
+      }
+    }
+    .idle {
+      &.about {
+        text-align: center;
+        font-size: 1.125rem;
+        margin: 1.25em 0;
+        p {
+          margin-bottom: 0;
+        }
+        @include media-breakpoint-up(sm) {
+          font-size: 1.25rem;
+        }
+        @include media-breakpoint-up(md) {
+          font-size: 1.625rem;
+          line-height: 1.375;
+        }
+        @include media-breakpoint-up(lg) {
+          font-size: 1.75rem;
+        }
+      }
+    }
+  }
+  &-confirmation {
+    span.confirmation {
+      color: white;
+      font-family: "Söhne Halbfett";
+      margin: 0.625em 0;
+      font-size: 2rem;
+      @include media-breakpoint-up(sm) {
+        font-size: 2.125rem;
+      }
+      @include media-breakpoint-up(md) {
+        font-size: 2.375rem;
+      }
+      @include media-breakpoint-up(lg) {
+        font-size: 2.75rem;
+      }
+    }
+    .confirmation {
+      &.join {
+        text-align: center;
+        font-size: 1.125rem;
+        p {
+          margin-bottom: 0.375em;
+        }
+        @include media-breakpoint-up(sm) {
+          font-size: 1.375rem;
+        }
+        @include media-breakpoint-up(md) {
+          font-size: 1.5rem;
+          line-height: 1.375;
+        }
+        @include media-breakpoint-up(lg) {
+          font-size: 1.625rem;
+        }
+      }
+    }
+  }
   header {
     .header.about {
       font-size: 1rem;
@@ -357,6 +629,10 @@ main#posting-app {
     }
     section#editor {
       .carousel {
+        .carousel-control-prev,
+        .carousel-control-next {
+          opacity: 1 !important;
+        }
         .app.next,
         .app.previous {
           width: 2.5rem;
@@ -394,3 +670,72 @@ main#posting-app {
     }
   }
 }
+
+.modal-dialog.posting {
+  color: white;
+  .modal- {
+    &footer {
+      .app.ok {
+        width: 2.75rem;
+        height: 2.75rem;
+        @include media-breakpoint-up(sm) {
+          width: 3.25rem;
+          height: 3.25rem;
+        }
+        @include media-breakpoint-up(md) {
+          width: 3.75rem;
+          height: 3.75rem;
+        }
+        @include media-breakpoint-up(lg) {
+          width: 4rem;
+          height: 4rem;
+        }
+      }
+    }
+    &title {
+      font-family: "Söhne Halbfett", serif;
+      font-size: 1.25rem;
+      @include media-breakpoint-up(sm) {
+        font-size: 1.5rem;
+      }
+      @include media-breakpoint-up(md) {
+        font-size: 1.75rem;
+      }
+      @include media-breakpoint-up(lg) {
+        font-size: 2rem;
+      }
+    }
+    &body {
+      font-family: "Söhne Leicht", serif;
+      font-size: 1.125rem;
+      @include media-breakpoint-up(sm) {
+        font-size: 1.25rem;
+      }
+      @include media-breakpoint-up(md) {
+        font-size: 1.5rem;
+      }
+      @include media-breakpoint-up(lg) {
+        font-size: 1.75rem;
+      }
+    }
+    &title,
+    &body {
+      text-align: center;
+    }
+  }
+}
+
+// @media (orientation: portrait) {
+//   main#posting-app div#contents {
+//   }
+// }
+
+// @media (any-pointer: fine) {
+//   main#posting-app div#contents section#editor .touch-device {
+//   }
+// }
+
+// @media (any-pointer: coarse) {
+//   main#posting-app div#contents section#editor .mouse-device {
+//   }
+// }

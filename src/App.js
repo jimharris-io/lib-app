@@ -63,7 +63,7 @@ function App(props) {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <span></span>,
+      element: <PostingApp app={app} />,
     },
     {
       path: "wall",

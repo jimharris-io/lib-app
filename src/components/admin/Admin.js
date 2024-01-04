@@ -3,6 +3,7 @@ import Post from "../wall/Post";
 import AdminItem from "./AdminItem";
 import { PersonCircle, DatabaseX, DatabaseDown, EmojiSmile, SortAlphaDown, SortAlphaUp, SortNumericUp, SortNumericDown, Heart, HeartFill } from 'react-bootstrap-icons';
 import LibraryOn from "../campaign/LibraryOn";
+import Everyones from "../campaign/Everyones";
 
 // app
 import { useState, useEffect } from 'react';
@@ -446,7 +447,7 @@ const Admin = (props) => {
             <Card.Header>
                 <Stack className="justify-content-between" direction="horizontal">
                     <Stack className="justify-content-between" gap={3} direction="horizontal">
-                        <div><LibraryOn context="admin"/></div>
+                        <div><Everyones context="admin"/></div>
                         <div>Admin v0.1</div>
                         {serverMarkup}
                     </Stack> 

@@ -1,0 +1,46 @@
+// campaign
+
+.library-on {
+  background-image: url("./../media/svg/library_on.svg");
+}
+.arts-council {
+  background-image: url("./../media/svg/arts_council.svg");
+}
+.bhcc {
+  background-image: url("./../media/svg/bhcc.svg");
+}
+.everyones {
+  background-image: url("./../media/svg/everyones.svg");
+}
+
+.library-on,
+.arts-council,
+.bhcc,
+.everyones {
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+footer#posting-app-footer {
+  .footer {
+    &.library-on,
+    &.arts-council,
+    &.bhcc,
+    &.everyones {
+      background-origin: content-box;
+      background-size: contain;
+    }
+    &.library-on {
+      background-position-x: left;
+      background-size: 75%;
+    }
+    &.arts-council {
+      background-position-x: center;
+    }
+    &.bhcc,
+    &.everyones {
+      background-position-x: right;
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { Stack, Form } from "react-bootstrap";
 import Carousel from 'react-bootstrap/Carousel';
 
 // firebase
-import { getFirestore, collection, addDoc, doc, updateDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 // app
 import { colours, shapes, fonts, randomMessages, Internal } from '../../constants/constants';
@@ -17,6 +17,7 @@ import LibraryOn from "../campaign/LibraryOn"
 import About from "../campaign/About";
 import Join from "../campaign/Join";
 import ArtsCouncil from "../campaign/ArtsCouncil";
+import Everyones from "../campaign/Everyones";
 import Bhcc from "../campaign/Bhcc";
 import Submit from "./Submit";
 import Next from "./Next";
@@ -33,18 +34,24 @@ const matcher = new RegExpMatcher({
 
 const PostingApp = (props) => {
 
-    const [ message, setMessage ] = useState("");
-    const [ font, setFont ] = useState();
-    const [ shape, setShape ] = useState();
-    const [ textColour, setTextColour ] = useState();
-    const [ backgroundColour, setBackgroundColour ] = useState();
-    const [ borderColour, setBorderColour ] = useState();
-    const [ idle, setIdle ] = useState({value: false});
-    const [ confirmation, setConfirmation ] = useState(false);
+    const [message, setMessage] = useState("");
+    const [font, setFont] = useState();
+    const [shape, setShape] = useState();
+    const [textColour, setTextColour] = useState();
+    const [backgroundColour, setBackgroundColour] = useState();
+    const [borderColour, setBorderColour] = useState();
+    const [idle, setIdle] = useState({value: true});
+    const [confirmation, setConfirmation] = useState(false);
     const [index, setIndex] = useState(0);
     const [nextDisabled, setNextDisabled] = useState(true);
+    const [appTimeout, setAppTimeout] = useState(5);
     
     const ref = useRef(null);
+
+    useEffect(()=>{
+        const html = document.getElementsByTagName("html");
+        html[0].style.overflow = "hidden";
+    }, [])
 
     useEffect(()=>{
         // console.log("// app: init timeout");
@@ -55,12 +62,30 @@ const PostingApp = (props) => {
             }/* else {
                 console.log("// app: executed timeout, nothing to do");
             }*/
-        }, 1000000)
+        }, appTimeout * 60 * 1000)
         return () => {
             // console.log("// app: cleared timeout");
             clearTimeout(timeout);
         }
-    }, [idle])
+    }, [idle, appTimeout])
+
+    // settings
+    useEffect(()=>{
+        if(!props.app) return;
+        let unsubscribe = onSnapshot(collection(getFirestore(props.app), "settings"), (snapshot)=>{
+            const settings = snapshot.docs.map((doc) => ({...doc.data(), id: props.app.options.settingsId }))[0];
+            setAppTimeout(settings.appTimeout);
+        }, (err) => {
+            props.onErrorMessage({
+                type: actionTypes.ERROR_MESSAGE,
+                title: "listening to settings",
+                error: err
+            })
+        })
+        return () => {
+            unsubscribe();
+        }
+    }, [props])
 
     const handleSelect = (selectedIndex, e) => {
       setIndex(selectedIndex);
@@ -83,8 +108,6 @@ const PostingApp = (props) => {
 
     const saveHandler = async (event) => {
         event.preventDefault();
-
-        return
 
         if(index !== 5) return; // handle ios submitting on return key
         if(message === "") return;
@@ -143,6 +166,8 @@ const PostingApp = (props) => {
         setFont(parseInt(Math.random() * 2));
         
         setMessage(randomMessages[parseInt(Math.random() * randomMessages.length)])
+
+        setIndex(5);
     }
 
     const changeMessage = (event) => {
@@ -355,28 +380,42 @@ const PostingApp = (props) => {
 
     const idleScreen =
         <main className="container-fluid" id="posting-app-idle">
+
+            <div className="portrait-only">
+                <Everyones context="warning"/>
+                <span>Please rotate your device</span>
+            </div>
+
             <section onClick={dismissIdle}>
-                <LibraryOn context="idle"/>
+                {/* <LibraryOn context="idle"/> */}
+                <Everyones context="idle"/>
                 <About context="idle"/>
-                <span>Tap to begin</span>
+                <span className="idle">Tap to begin</span>
             </section>
         </main>
 
     const confirmationScreen =
         <main className="container-fluid" id="posting-app-confirmation">
+
+            <div className="portrait-only">
+                <Everyones context="warning"/>
+                <span>Please rotate your device</span>
+            </div>
+
             <section onClick={dismissConfirmation}>
-                <LibraryOn context="confirmation"/>
-                <span>Thanks!</span>
+                {/* <LibraryOn context="confirmation"/> */}
+                <Everyones context="confirmation"/>
+                <span className="confirmation">Thanks!</span>
                 <Join context="confirmation"/>
             </section>
         </main>
 
     const slid = (index) => {
         let disable = false;
-        if(((index === 0 && !shape)
-            || (index === 1 && !backgroundColour)
-            || (index === 2 && !borderColour)
-            || (index === 3 && !textColour)
+        if(((index === 0 && shape === undefined)
+            || (index === 1 && backgroundColour === undefined)
+            || (index === 2 && borderColour === undefined)
+            || (index === 3 && textColour === undefined)
             || (index === 4 && font === undefined))
             && (!nextDisabled)
         ){
@@ -385,14 +424,16 @@ const PostingApp = (props) => {
         setNextDisabled(disable);
     }
 
-    const foo = () => {
-        console.log("// submit");
-    }
-
     const main =
         <Form className="w-100 h-100" onSubmit={saveHandler}>
             <main onClick={awake} className="container-md" id="posting-app">
-                <header>
+
+                <div className="portrait-only">
+                    <Everyones context="warning"/>
+                    <span>Please rotate your device</span>
+                </div>
+
+                <header onClick={rand}>
                     <About context="header"/>
                 </header>
 
@@ -413,9 +454,7 @@ const PostingApp = (props) => {
 
                         <button type="submit" disabled style={{display: "none"}} aria-hidden="true"></button>
 
-                        {/* <span>carousel</span> */}
-
-                        <Carousel className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
+                        <Carousel touch={!nextDisabled} className={nextDisabled && 'disabled'} onSlid={slid} nextIcon={<Next context="app"/>} prevIcon={<Previous context="app"/>} wrap={false} interval={null} indicators={false} activeIndex={index} onSelect={handleSelect}>
                             {data.map((slide, i) => {
                                 return (
                                     <Carousel.Item key={`slide-${i}`}>
@@ -433,7 +472,7 @@ const PostingApp = (props) => {
                 <div></div>
                 
             </main>
-            <footer id="posting-app-footer" onClick={rand}>
+            <footer id="posting-app-footer">
                 <div className="container-md h-100" >
                     <LibraryOn context="footer"/>
                     <ArtsCouncil context="footer"/>

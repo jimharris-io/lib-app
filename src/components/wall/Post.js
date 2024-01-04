@@ -34,7 +34,7 @@ const Post = (props) => {
     }
 
     let shapeInfo;
-    if(props.shape){
+    if(props.shape !== undefined){
         shapeInfo = shapes.find(s => s.value === props.shape);
     } else {
         shapeInfo = shapes.find(s => s.value === 0);
@@ -45,14 +45,14 @@ const Post = (props) => {
     const size = height;
 
     let textColour;
-    if(props.textColour){
+    if(props.textColour !== undefined){
         textColour = colours.find((colour) => colour.value === props.textColour)?.hex;
     } else {
         textColour = `rgba(255, 255, 255, 0.85)`
     }
 
     let fill;
-    if(props.fill){
+    if(props.fill !== undefined){
         fill = colours.find((colour) => colour.value === props.fill)?.hex;
     } else {
         fill = 'black';
@@ -61,7 +61,7 @@ const Post = (props) => {
     let strokeWidth;
     let stroke; // borderColour
     let dashed;
-    if(props.stroke) {
+    if(props.stroke !== undefined) {
         stroke = colours.find((colour) => colour.value === props.stroke)?.hex;
         strokeWidth = props.strokeWidth;
         dashed = "";
@@ -71,7 +71,7 @@ const Post = (props) => {
         dashed = "10,10";
     }
 
-    if(props.fill && !props.stroke){
+    if(props.fill !== undefined && props.stroke === undefined){
         stroke = "none";
         strokeWidth = "0";
         dashed = "";

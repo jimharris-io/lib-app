@@ -1,8 +1,12 @@
 // components
 import Post from "../wall/Post";
-import Join from "../campaign/Join";
+import JoinAlt from "../campaign/JoinAlt";
 import Tagline from "../campaign/Tagline";
 import CompositeLogo from "../campaign/CompositeLogo";
+import Bhcc from "../campaign/Bhcc";
+import LibraryOn from "../campaign/LibraryOn";
+import Everyones from "../campaign/Everyones";
+import Idle from "./Idle";
 
 // app
 import { useState, useEffect } from "react";
@@ -33,7 +37,7 @@ const Wall = (props) => {
     const [faves, setFaves] =  useState([]);
     const [minGrid, setMinGrid] = useState(0);
     const [maxGrid, setMaxGrid] = useState(4);
-    const [wallTimeout, setWallTimeout] = useState(30);
+    const [wallTimeout, setWallTimeout] = useState(5);
 
     const [idle, setIdle] = useState({value:false});
 
@@ -42,17 +46,17 @@ const Wall = (props) => {
         // console.log("// wall: init timeout");
         const timeout = setTimeout(()=>{
             if(!idle.value){
-                setIdle({...{value:true}});
+                setIdle({...{value:false}});
                 // console.log("// wall: executed timeout, set idle");
             }/* else {
                 console.log("// wall: executed timeout, nothing to do");
             }*/
-        }, 30000)
+        }, wallTimeout * 60 * 1000)
         return () => {
             // console.log("// wall: cleared timeout");
             clearTimeout(timeout);
         }
-    }, [idle])
+    }, [idle, wallTimeout])
 
     // wake
     useEffect(()=>{
@@ -164,7 +168,7 @@ const Wall = (props) => {
     const currentThreshold = grids[currentGrid].threshold;
     const remainingSlots = currentThreshold - posts.length;
     const favesShown = faves.slice(0, remainingSlots)
-    console.log(`thresh:${currentThreshold}, posts:${posts.length}, slots:${remainingSlots}, shown:${favesShown.length}`);
+    // console.log(`thresh:${currentThreshold}, posts:${posts.length}, slots:${remainingSlots}, shown:${favesShown.length}`);
 
     const aggregate = [
         ...favesShown,
@@ -217,18 +221,27 @@ const Wall = (props) => {
         gridTemplateRows: `repeat(${gridHeight}, 1fr)`
     }
     
-    const idleMarkup = <h1 onClick={wake} style={{padding: "3rem", color: "white"}}>idle</h1>;
+    const idleMarkup = idle.value ? <Idle wake={wake}/> : <div className="idle-false"/>
 
     const wallMarkup = <div style={wallStyle} className="wall h-100">
         <div style={gridStyle} className="grid">
             {containers}
         </div>
-        <Tagline context="wall"/>
-        <Join context="wall"/>
-        <CompositeLogo context="wall"/>
+        {idleMarkup}
+        <div className="top-left">
+            <Everyones context="on-wall"/>
+            <Tagline context="on-wall"/>
+        </div>
+        <div className="bottom-left">
+            <Bhcc context="on-wall"/>
+            <LibraryOn context="on-wall"/>
+        </div>
+        <div className="bottom-right">
+            <JoinAlt context="on-wall"/>
+        </div>
     </div>
 
-    return idle.value ? idleMarkup : wallMarkup;
+    return wallMarkup;
 }
 
 const mapStateToProps = (state) => {
