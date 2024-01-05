@@ -1,6 +1,6 @@
 {
-  "short_name": "lib-app",
-  "name": "Library On app",
+  "short_name": "Library app",
+  "name": "Everyone's Library",
   "icons": [
     {
       "src": "favicon.ico",

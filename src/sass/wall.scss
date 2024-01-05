@@ -5,7 +5,7 @@
   .grid {
     display: grid;
     background: black;
-    position:relative;
+    position: relative;
     top: 50%;
     transform: translateY(-50%);
   }
@@ -31,14 +31,16 @@
     left: 0;
     bottom: 0;
     display: flex;
-    padding: 2vh 2vw;
+    padding: 4vh 2vw;
     .bhcc.on-wall {
-      width: 8vw;
-      height: 7vh;
+      width: 13vw;
+      height: 13.5vh;
     }
     .library-on.on-wall {
       width: 10vw;
-      height: 4vh
+      height: 4vh;
+      margin-left: 3vw;
+      margin-top: 2vh; // temp
     }
   }
   .bottom-right {
@@ -47,13 +49,15 @@
     right: 0;
     bottom: 0;
     display: flex;
-    padding: 2vh 2vw;
+    padding: 4vh 2vw;
     .join-alt {
       color: white;
-      font-family: "Söhne Halbfett";
-      width: 10vw;
-      font-size: calc( 16px + (24 - 16) * (100vw - 1024px) / (1920 - 1024));
-      line-height: 1.1;
+      font-family: "Söhne Leicht";
+      width: 17vw;
+      // font-size: calc(16px + (24 - 16) * (100vw - 1024px) / (1920 - 1024));
+      // line-height: 1.1;
+      font-size: calc(20px + (36 - 20) * (100vw - 1024px) / (1920 - 1024));
+      line-height: 1.25;
       p {
         margin-bottom: 0;
       }
@@ -70,12 +74,14 @@
       color: white;
       font-family: "Söhne Halbfett";
       width: 25vw;
-      font-size: calc( 24px + (36 - 24) * (100vw - 1024px) / (1920 - 1024));
+      // font-size: calc(24px + (36 - 24) * (100vw - 1024px) / (1920 - 1024));
+      // line-height: 1.25;
+      font-size: calc(20px + (36 - 20) * (100vw - 1024px) / (1920 - 1024));
       line-height: 1.25;
     }
     .everyones.on-wall {
-      width: 10vw;
-      height: 7vh
+      width: 15vw;
+      height: 11vh;
     }
   }
 }

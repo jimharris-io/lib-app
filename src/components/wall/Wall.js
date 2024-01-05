@@ -39,14 +39,14 @@ const Wall = (props) => {
     const [maxGrid, setMaxGrid] = useState(4);
     const [wallTimeout, setWallTimeout] = useState(5);
 
-    const [idle, setIdle] = useState({value:false});
+    const [idle, setIdle] = useState({value: false});
 
     //sleep
     useEffect(()=>{
         // console.log("// wall: init timeout");
         const timeout = setTimeout(()=>{
             if(!idle.value){
-                setIdle({...{value:false}});
+                setIdle({...{value: true}});
                 // console.log("// wall: executed timeout, set idle");
             }/* else {
                 console.log("// wall: executed timeout, nothing to do");

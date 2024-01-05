@@ -370,7 +370,7 @@ const PostingApp = (props) => {
                     {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
                         <Form.Label>Submit your message</Form.Label>
                         <Stack className="justify-content-center" direction="horizontal">
-                            <button disabled={message === "" && "disabled"} className="submit-button" type="submit"><Submit context={`app ${message === "" && 'disabled'}`}/></button>
+                            <button onClick={saveHandler} disabled={message === "" && "disabled"} className="submit-button" type="button"><Submit context={`app ${message === "" && 'disabled'}`}/></button>
                             {/* <div className="text-center">submit</div> */}
                         </Stack>
                     {/* </Stack> */}
@@ -425,7 +425,7 @@ const PostingApp = (props) => {
     }
 
     const main =
-        <Form className="w-100 h-100" onSubmit={saveHandler}>
+        <Form className="w-100 h-100" onSubmit={(e)=>e.preventDefault()}>
             <main onClick={awake} className="container-md" id="posting-app">
 
                 <div className="portrait-only">

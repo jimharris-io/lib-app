@@ -448,7 +448,7 @@ const Admin = (props) => {
                 <Stack className="justify-content-between" direction="horizontal">
                     <Stack className="justify-content-between" gap={3} direction="horizontal">
                         <div><Everyones context="admin"/></div>
-                        <div>Admin v0.1</div>
+                        <div>Admin</div>
                         {serverMarkup}
                     </Stack> 
                     {auth?.currentUser ? funcs : ""}
