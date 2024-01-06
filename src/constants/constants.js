@@ -107,7 +107,7 @@ export const fonts = [
 
 export const adminMessageLength = 140;
 
-export const pagelength = 10;
+export const pagelength = 25;
 
 export const randomMessages = [
     "like to pop in for a coffee and read the paper",
@@ -133,6 +133,7 @@ export const SortBy = {
 
 export const Server = {
     DEVELOPMENT: "lib-app",
+    STAGING: "lib-production",
     PRODUCTION: "everyones-library"
 }
 

@@ -34,6 +34,19 @@ const firbaseConfigs = [
       // appId: "1:522927814047:web:663dd791864f763446b9aa",
       // settingsId: "00WfndosxLgFrJy4LtxP",
     }
+  },
+  {
+    name: "lib-production",
+    settingsId: "00WfndosxLgFrJy4LtxP",
+    config: {
+      apiKey: "AIzaSyAohLbJlfcvF33yZYO5qKZ2Xx0Df4_Pg2Y",
+      authDomain: "lib-app-production.firebaseapp.com",
+      projectId: "lib-app-production",
+      storageBucket: "lib-app-production.appspot.com",
+      messagingSenderId: "522927814047",
+      appId: "1:522927814047:web:663dd791864f763446b9aa",
+      settingsId: "00WfndosxLgFrJy4LtxP",
+    }
   }
 ];
 

@@ -380,6 +380,7 @@ const Admin = (props) => {
         <FormGroup controlId="wall">
             <Form.Select onChange={changeServer} value={props.server} aria-label="server">
                 <option value={Server.PRODUCTION}>Production</option>
+                <option value={Server.STAGING}>Staging</option>
                 <option value={Server.DEVELOPMENT}>Development</option>
             </Form.Select>
         </FormGroup>
