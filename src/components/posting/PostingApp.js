@@ -6,7 +6,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 // app
-import { colours, shapes, fonts, randomMessages, Internal } from '../../constants/constants';
+import { colours, shapes, fonts, randomMessages, Internal, confirmationTimeout } from '../../constants/constants';
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actionTypes from "./../../store/actions";
@@ -23,13 +23,26 @@ import Submit from "./Submit";
 import Next from "./Next";
 import Previous from "./Previous";
 import Ok from "./Ok";
+import JoinQR from "../campaign/JoinQR";
 // import Continue from "./Continue"
 
-import { RegExpMatcher, TextCensor, englishDataset, englishRecommendedTransformers } from 'obscenity';
+// profanity
+import { RegExpMatcher, pattern, DataSet, assignIncrementingIds, englishDataset, englishRecommendedTransformers } from 'obscenity';
+
+const dictionary = new DataSet()
+    .addAll(englishDataset)
+    // .removePhrasesIf((phrase) => phrase.metadata.originalWord === 'fuck') /* eg, removals */
+    .addPhrase((phrase) => /* eg, additions */
+        phrase
+            // .setMetadata({ originalWord: 'shit' })
+            .addPattern(pattern`shit`)
+            // .addWhitelistedTerm('simple'), /* eg, exceptions */
+        )
+    .addPhrase((phrase) => phrase.addPattern(pattern`wank`));
 
 const matcher = new RegExpMatcher({
-	...englishDataset.build(),
-	...englishRecommendedTransformers,
+    ...dictionary.build(),
+    ...englishRecommendedTransformers
 })
 
 const PostingApp = (props) => {
@@ -49,6 +62,7 @@ const PostingApp = (props) => {
     const ref = useRef(null);
 
     useEffect(()=>{
+        // overscroll bounce
         const html = document.getElementsByTagName("html");
         html[0].style.overflow = "hidden";
     }, [])
@@ -112,6 +126,9 @@ const PostingApp = (props) => {
         if(index !== 5) return; // handle ios submitting on return key
         if(message === "") return;
 
+        const matchAll = require('string.prototype.matchall') // support older ipad for demo
+        matchAll.shim()
+
         if(new String().matchAll && matcher.hasMatch(message)){
             warnProfanity();
             return;
@@ -130,6 +147,10 @@ const PostingApp = (props) => {
             favourite: false
         }).then(()=>{
             setConfirmation(true);
+            setTimeout(()=>{
+                dismissConfirmation();
+            }, confirmationTimeout * 1000)
+
         }).catch((err)=>{
             props.onErrorMessage({
                 type: actionTypes.ERROR_MESSAGE,
@@ -171,7 +192,20 @@ const PostingApp = (props) => {
     }
 
     const changeMessage = (event) => {
-        setMessage(event.target.value);
+
+        console.log(event.target.value.charCodeAt(0));
+
+        let strip_emojis = event.target.value.replace(
+            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u2018]|[\u2020-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+            ''
+        )
+
+        let single = strip_emojis.replace(
+            /(['])/g,
+            '\u2019'
+        )
+
+        setMessage(message);
         awake();
     }
 
@@ -365,6 +399,18 @@ const PostingApp = (props) => {
                     {/* </Stack> */}
                 </Form.Group>
         },
+        // {
+        //     jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="message">
+        //             {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
+        //                 <Form.Label><span className="sohne-leicht">Step six</span><br/>Enter your message</Form.Label>
+        //                 <Stack className="justify-content-center" direction="horizontal">
+        //                 <Form.Group className="message-input" controlId="message">
+        //                     <Form.Control enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+        //                 </Form.Group>
+        //                 </Stack>
+        //             {/* </Stack> */}
+        //         </Form.Group>
+        // },
         {
             jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="font">
                     {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
@@ -407,6 +453,7 @@ const PostingApp = (props) => {
                 <Everyones context="confirmation"/>
                 <span className="confirmation">Thanks!</span>
                 <Join context="confirmation"/>
+                <JoinQR context="confirmation"/>
             </section>
         </main>
 
@@ -424,6 +471,21 @@ const PostingApp = (props) => {
         setNextDisabled(disable);
     }
 
+    const messageMarkup = 
+        <section id="message">
+            {index === 5 ?
+            <Form.Group className="message-input" controlId="message">
+                <Form.Control enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+            </Form.Group> : ''}
+        </section>;
+
+    // const messageMarkup = index === 5 ?
+    //     <section id="message">
+    //         <Form.Group className="message-input" controlId="message">
+    //             <Form.Control enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
+    //         </Form.Group>
+    //     </section> : '';
+
     const main =
         <Form className="w-100 h-100" onSubmit={(e)=>e.preventDefault()}>
             <main onClick={awake} className="container-md" id="posting-app">
@@ -437,18 +499,14 @@ const PostingApp = (props) => {
                     <About context="header"/>
                 </header>
 
-                <div id="contents">
+                <div id="contents" className={`w-100 step-${index}`}>
 
                     <section /*onClick={textfocus}*/ id="preview">
                         <div>{preview}</div>
                         {/* <span>preview</span> */}
                     </section>
 
-                    <section id="message">
-                        <Form.Group className="message-input" controlId="message">
-                            <Form.Control enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
-                        </Form.Group>
-                    </section>
+                    {messageMarkup}
 
                     <section id="editor">
 

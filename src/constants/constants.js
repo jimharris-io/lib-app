@@ -109,6 +109,8 @@ export const adminMessageLength = 140;
 
 export const pagelength = 25;
 
+export const confirmationTimeout = 15;
+
 export const randomMessages = [
     "like to pop in for a coffee and read the paper",
     "I go there every night after school",

@@ -1,7 +1,7 @@
 // campaign
 
 .library-on {
-  background-image: url("./../media/svg/library_on.svg");
+  background-image: url("./../media/svg/library_on_white.svg");
 }
 .arts-council {
   background-image: url("./../media/svg/arts_council.svg");
@@ -12,11 +12,15 @@
 .everyones {
   background-image: url("./../media/svg/everyones.svg");
 }
+.join-qr {
+  background-image: url("./../media/svg/join-qr.svg");
+}
 
 .library-on,
 .arts-council,
 .bhcc,
-.everyones {
+.everyones,
+.join-qr {
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -33,7 +37,6 @@ footer#posting-app-footer {
     }
     &.library-on {
       background-position-x: left;
-      background-size: 75%;
     }
     &.arts-council {
       background-position-x: center;
