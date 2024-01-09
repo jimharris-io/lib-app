@@ -12,6 +12,7 @@ import Wall from "./components/wall/Wall";
 import PostingApp from "./components/posting/PostingApp";
 import Admin from "./components/admin/Admin";
 import Location from "./components/admin/Location";
+import Node from "./components/admin/Node";
 
 // firebase
 import { firebaseConfigs } from "./firebase/firebase";
@@ -81,6 +82,10 @@ function App(props) {
     {
       path: "location",
       element: <Location app={app} />,
+    },
+    {
+      path: "node",
+      element: <Node app={app} />,
     }
   ]);
 
