@@ -18,6 +18,10 @@
     {
       "source": "/wall",
       "destination": "/index.html"
+    },
+    {
+      "source": "/location",
+      "destination": "/index.html"
     }]
   },
   {

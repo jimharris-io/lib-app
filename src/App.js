@@ -11,6 +11,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Wall from "./components/wall/Wall";
 import PostingApp from "./components/posting/PostingApp";
 import Admin from "./components/admin/Admin";
+import Location from "./components/admin/Location";
 
 // firebase
 import { firebaseConfigs } from "./firebase/firebase";
@@ -76,6 +77,10 @@ function App(props) {
     {
       path: "post",
       element: <PostingApp app={app} />,
+    },
+    {
+      path: "location",
+      element: <Location app={app} />,
     }
   ]);
 

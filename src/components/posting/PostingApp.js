@@ -10,6 +10,7 @@ import { colours, shapes, fonts, randomMessages, Internal, confirmationTimeout }
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actionTypes from "./../../store/actions";
+import ReCAPTCHA from "react-google-recaptcha"
 
 // components
 import Post from "../wall/Post";
@@ -58,8 +59,11 @@ const PostingApp = (props) => {
     const [index, setIndex] = useState(0);
     const [nextDisabled, setNextDisabled] = useState(true);
     const [appTimeout, setAppTimeout] = useState(5);
+
+    const [usingCAPTCHA, setUsingCAPTCHA] = useState(true);
     
     const ref = useRef(null);
+    const captchaRef = useRef(null)
 
     useEffect(()=>{
         // overscroll bounce
@@ -193,8 +197,6 @@ const PostingApp = (props) => {
 
     const changeMessage = (event) => {
 
-        console.log(event.target.value.charCodeAt(0));
-
         let strip_emojis = event.target.value.replace(
             /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u2018]|[\u2020-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
             ''
@@ -205,7 +207,7 @@ const PostingApp = (props) => {
             '\u2019'
         )
 
-        setMessage(message);
+        setMessage(single);
         awake();
     }
 
@@ -415,9 +417,9 @@ const PostingApp = (props) => {
             jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="font">
                     {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
                         <Form.Label>Submit your message</Form.Label>
-                        <Stack className="justify-content-center" direction="horizontal">
+                        <Stack className="align-items-center" direction="vertical">
                             <button onClick={saveHandler} disabled={message === "" && "disabled"} className="submit-button" type="button"><Submit context={`app ${message === "" && 'disabled'}`}/></button>
-                            {/* <div className="text-center">submit</div> */}
+                            {usingCAPTCHA ? <ReCAPTCHA theme="dark" sitekey={"6Lc3IkspAAAAABMFnfMr_Vm9WF6_EUhtqdhzaRfv"} ref={captchaRef} /> : ''}
                         </Stack>
                     {/* </Stack> */}
                 </Form.Group>
