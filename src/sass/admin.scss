@@ -47,3 +47,12 @@ section#location, section#server {
    color: darkgray
   }
 }
+
+input[type=range]::-webkit-slider-runnable-track {
+  background-color: #cccccc;
+}
+
+ul.pagination {
+  overflow-x: scroll;
+  width: 100%;
+}

@@ -4,8 +4,10 @@ import AdminItem from "./AdminItem";
 import { PersonCircle, DatabaseX, DatabaseDown, EmojiSmile, SortAlphaDown, SortAlphaUp, SortNumericUp, SortNumericDown, Heart, HeartFill } from 'react-bootstrap-icons';
 import LibraryOn from "../campaign/LibraryOn";
 import Everyones from "../campaign/Everyones";
+import Test from "./Test";
 
 // app
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCallback, useRef } from "react";
 import { connect } from "react-redux";
@@ -14,7 +16,7 @@ import { Server, SortOrder, SortBy, pagelength } from './../../constants/constan
 import { toPng } from 'html-to-image'
 
 // firebase
-import { query, limit, orderBy, getFirestore, getDocs, writeBatch, collection, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { addDoc, query, limit, orderBy, getFirestore, getDocs, writeBatch, collection, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { signOut, signInWithEmailAndPassword, getAuth, onAuthStateChanged } from "firebase/auth";
 
 // bootstrap
@@ -39,6 +41,8 @@ const Admin = (props) => {
     const [auth, setAuth] = useState(null);
     const [posts, setPosts] =  useState([]);
 
+    const params = useParams();
+
     // posts // QUERY
     useEffect(() => {
         if(!props.app) return;
@@ -50,7 +54,7 @@ const Admin = (props) => {
         });
 
         const colRef = collection(getFirestore(props.app), "posts");
-        const indexQuery = query(colRef, orderBy('created', 'desc'), limit(250))
+        const indexQuery = query(colRef, orderBy('created', 'desc')/*, limit(1000)*/)
        
         let unsubscribe = onSnapshot(indexQuery, (snapshot)=>{
             const posts = snapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
@@ -89,6 +93,20 @@ const Admin = (props) => {
     }, [props.app])
 
     // actions
+
+    const save = async (data) => {
+        props.onShowLoading({type: actionTypes.SHOW_LOADING});
+        await addDoc(collection(getFirestore(props.app), "posts"), data).then(()=>{
+        }).catch((err)=>{
+            props.onErrorMessage({
+                type: actionTypes.ERROR_MESSAGE,
+                title: "saving post",
+                error: err
+            })
+        }).finally(()=>{
+            props.onHideLoading({type: actionTypes.HIDE_LOADING});
+        })
+    }
 
     const deletePost = async (id) => {
         props.onShowLoading({type: actionTypes.SHOW_LOADING});
@@ -457,6 +475,8 @@ const Admin = (props) => {
             </Card.Header>
         </Card>
 
+    const test = <Test save={save}/>
+
     const main =
         <div>
             {title}
@@ -475,6 +495,7 @@ const Admin = (props) => {
                     </Stack>
                 </Card.Body>
             </Card>
+            {params.option === "test" && test}
             <Card className="admin">
                 <Card.Header>
                     <Stack className="justify-content-between" direction="horizontal">

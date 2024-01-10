@@ -1,3 +1,30 @@
+export const Server = {
+    DEVELOPMENT: "lib-app",
+    STAGING: "lib-production",
+    PRODUCTION: "everyones-library"
+}
+
+export const version = {
+    "lib-app": { // development
+        release: "0.9.3",
+        show: true,
+        dismiss: 0,
+        cheatMode: true
+    },
+    "lib-production": { // staging
+        release: "0.9.3",
+        show: true,
+        dismiss: 0,
+        cheatMode: true
+    },
+    "everyones-library": { // production
+        release: "0.9.3",
+        show: true,
+        dismiss: 10,
+        cheatMode: true
+    },
+}
+
 export const colours = [
     {
         label: "Yellow",
@@ -131,12 +158,6 @@ export const SortBy = {
     DATE: "date",
     NAME: "name",
     FAVOURITE: "favourite"
-}
-
-export const Server = {
-    DEVELOPMENT: "lib-app",
-    STAGING: "lib-production",
-    PRODUCTION: "everyones-library"
 }
 
 export const Internal = {
@@ -572,17 +593,17 @@ export const walks = [
         },
         { // 78
             column: 2,
-            row: 2,
+            row: 3,
             grid: 4
         },
         { // 79
-            column: 1,
-            row: 2,
+            column: 2,
+            row: 4,
             grid: 4
         },
         { // 80
             column: 0,
-            row: 2,
+            row: 3,
             grid: 4
         },
         { // 81

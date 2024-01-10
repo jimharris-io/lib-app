@@ -6,8 +6,9 @@ import Carousel from 'react-bootstrap/Carousel';
 import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 // app
-import { colours, shapes, fonts, randomMessages, Internal, confirmationTimeout } from '../../constants/constants';
+import { colours, shapes, fonts, randomMessages, Internal, confirmationTimeout, version } from '../../constants/constants';
 import { useState, useRef, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import { connect } from "react-redux";
 import * as actionTypes from "./../../store/actions";
 import ReCAPTCHA from "react-google-recaptcha"
@@ -37,9 +38,13 @@ const dictionary = new DataSet()
         phrase
             // .setMetadata({ originalWord: 'shit' })
             .addPattern(pattern`shit`)
+            .addPattern(pattern`piss`)
+            .addPattern(pattern`arse`)
+            .addPattern(pattern`ass`)
+            .addPattern(pattern`bollocks`)
+            .addPattern(pattern`wank`)
             // .addWhitelistedTerm('simple'), /* eg, exceptions */
-        )
-    .addPhrase((phrase) => phrase.addPattern(pattern`wank`));
+        );
 
 const matcher = new RegExpMatcher({
     ...dictionary.build(),
@@ -60,7 +65,8 @@ const PostingApp = (props) => {
     const [nextDisabled, setNextDisabled] = useState(true);
     const [appTimeout, setAppTimeout] = useState(5);
 
-    const [usingCAPTCHA, setUsingCAPTCHA] = useState(true);
+    const params = useParams();
+    const [usingCAPTCHA, setUsingCAPTCHA] = useState(params.option !== "onsite");
     
     const ref = useRef(null);
     const captchaRef = useRef(null)
@@ -167,6 +173,10 @@ const PostingApp = (props) => {
     }
 
     const rand = () => {
+
+        console.log(version[props.server]);
+        
+        if(!version[props.server].cheatMode) return;
 
         const shuffleArray = (array) => {
             for (let i = array.length - 1; i > 0; i--) {
@@ -427,7 +437,7 @@ const PostingApp = (props) => {
     ]
 
     const idleScreen =
-        <main className="container-fluid" id="posting-app-idle">
+        <main className={`container-fluid ${params.option === "onsite" && 'onsite'}`} id="posting-app-idle">
 
             <div className="portrait-only">
                 <Everyones context="warning"/>
@@ -443,7 +453,7 @@ const PostingApp = (props) => {
         </main>
 
     const confirmationScreen =
-        <main className="container-fluid" id="posting-app-confirmation">
+        <main className={`container-fluid ${params.option === "onsite" && 'onsite'}`} id="posting-app-confirmation">
 
             <div className="portrait-only">
                 <Everyones context="warning"/>
@@ -490,7 +500,7 @@ const PostingApp = (props) => {
 
     const main =
         <Form className="w-100 h-100" onSubmit={(e)=>e.preventDefault()}>
-            <main onClick={awake} className="container-md" id="posting-app">
+            <main onClick={awake} className={`container-md ${params.option === "onsite" && 'onsite'}`} id="posting-app">
 
                 <div className="portrait-only">
                     <Everyones context="warning"/>

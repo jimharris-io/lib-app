@@ -13,6 +13,8 @@ import PostingApp from "./components/posting/PostingApp";
 import Admin from "./components/admin/Admin";
 import Location from "./components/admin/Location";
 import Node from "./components/admin/Node";
+import Version from "./components/admin/Version";
+import PageNotFound from "./components/admin/PageNotFound";
 
 // firebase
 import { firebaseConfigs } from "./firebase/firebase";
@@ -34,7 +36,7 @@ setTimeout(() => {
 function App(props) {
 
   const [app, setApp] = useState();
-  const [server, setServer] = useState(Server.DEVELOPMENT);
+  const [server, setServer] = useState(Server.PRODUCTION);
 
   // modal
 
@@ -65,7 +67,7 @@ function App(props) {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <PostingApp app={app} />,
+      element: <PostingApp server={server} app={app} />,
     },
     {
       path: "wall",
@@ -76,16 +78,24 @@ function App(props) {
       element: <Admin app={app} server={server} setServer={setServer} />,
     },
     {
-      path: "post",
-      element: <PostingApp app={app} />,
+      path: "admin/:option",
+      element: <Admin app={app} server={server} setServer={setServer} />,
     },
     {
-      path: "location",
-      element: <Location app={app} />,
+      path: "post",
+      element: <PostingApp server={server} app={app} />,
+    },
+    {
+      path: "post/:option",
+      element: <PostingApp server={server} app={app} />,
     },
     {
       path: "node",
       element: <Node app={app} />,
+    },
+    {
+      path: "*",
+      element: <PageNotFound/>
     }
   ]);
 
@@ -115,6 +125,9 @@ function App(props) {
 
       {/* spinner */}
       <Spinner className={`${props.loading ? 'show-loading':'hide-loading'}`} animation="border" />
+
+      {/* version */}
+      <Version server={server}/>
 
     </div>
   );

@@ -1,70 +1,128 @@
 {
-  "hosting": [{
-    "target": "development",
-    "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [{
-      "source": "/post",
-      "destination": "/index.html"
+  "hosting": [
+    {
+      "target": "development",
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "*",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/post",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/post/onsite",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/admin",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/admin/test",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/wall",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/node",
+          "destination": "/index.html"
+        }
+      ]
     },
     {
-      "source": "/admin",
-      "destination": "/index.html"
+      "target": "production",
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/post",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/post/onsite",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/admin",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/admin/test",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/wall",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/node",
+          "destination": "/index.html"
+        }
+      ]
     },
     {
-      "source": "/wall",
-      "destination": "/index.html"
-    },
+      "target": "staging",
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/post",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/post/onsite",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/admin",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/admin/test",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/wall",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/node",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
+  "functions": [
     {
-      "source": "/location",
-      "destination": "/index.html"
-    }]
-  },
-  {
-    "target": "production",
-    "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [{
-      "source": "/post",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/wall",
-      "destination": "/index.html"
-    }]
-  },
-  {
-    "target": "staging",
-    "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [{
-      "source": "/post",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/wall",
-      "destination": "/index.html"
-    }]
-  }]
-
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
 }
