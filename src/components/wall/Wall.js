@@ -43,7 +43,7 @@ const Wall = (props) => {
     const [idle, setIdle] = useState({value: false});
     const [videoPlaying, setVideoPlaying] = useState({value: false});
 
-    const [debug, setDebug] = useState(false);
+    const [debug, ] = useState(false);
 
     //sleep
     useEffect(()=>{
@@ -123,11 +123,11 @@ const Wall = (props) => {
         }
     }, [props, idle])
 
-    // posts // QUERY
+    // posts
     useEffect(() => {
         if(!props.app) return;
         const colRef = collection(getFirestore(props.app), "posts");
-        const q = query(colRef, orderBy('created', 'desc'), where('favourite', '==', false));
+        const q = query(colRef, orderBy('created', 'desc')/*, where('favourite', '==', false)*/);
         let unsubscribe = onSnapshot(q, (snapshot)=>{
             const posts = snapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
             let sorted = posts.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
@@ -194,20 +194,21 @@ const Wall = (props) => {
         setIdle({...{value:false}});
     }
 
-    // favourites
+    // render wall
+    
+    // const currentGrid = (walks[0][posts.length - 1])?.grid || 0;
+    // const currentThreshold = grids[currentGrid].threshold;
+    // const maxThreshold = grids[maxGrid].threshold;
+    // const remainingSlots = currentThreshold - posts.length;
+    // const favesShown = faves.slice(0, remainingSlots)
+    // console.log(`thresh:${currentThreshold}, chunked posts:${posts.length}, faves: ${faves.length}`);
 
-    const currentGrid = (walks[0][posts.length - 1])?.grid || 0;
-    const currentThreshold = grids[currentGrid].threshold;
-    const remainingSlots = currentThreshold - posts.length;
-    const favesShown = faves.slice(0, remainingSlots)
-    // console.log(`thresh:${currentThreshold}, posts:${posts.length}, slots:${remainingSlots}, shown:${favesShown.length}`);
-
-    const aggregate = [
-        ...favesShown,
-        ...posts
-    ];
-
-    let sorted = aggregate.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
+    // all we care about are the favourites that can't be shown
+    // posts, are the chunked posts to be shown, may include favourites
+    // faves, are all favourites for all time currently in database
+    // first, we want to isolate the unshown favourites
+    
+    let sorted = posts.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
 
     let wallPosts = sorted.map((post, i) => {
         const wallPost = <Post favourite={post.favourite} key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
@@ -246,6 +247,7 @@ const Wall = (props) => {
     if(debug){
         for(let k = 0; k < grids[grid].height; k++){
             for(let l = 0; l < grids[grid].width; l++){
+                const empty = grids[grid].empty.filter(e=> e.column === grids[grid].column + l && e.row === grids[grid].row + k)
                 const style = {
                     color: "darkgray",
                     gridColumn: l + 1,
@@ -256,14 +258,47 @@ const Wall = (props) => {
                     fontSize: "2rem",
                     border: "1px dashed white",
                     borderRight: "none",
-                    borderBottom: "none"
+                    borderBottom: "none",
+                    background: empty.length > 0 ? "green" : "none"
                 }
-                containers.push(<div style={style} key={`container-${l}-${k}`}>{`(${grids[grid].column + l}, ${grids[grid].row + k})`}</div>)
+                containers.push(<div onClick={()=>console.log(grids[grid].column + l, grids[grid].row + k)} style={style} key={`container-${l}-${k}`}>{`(${grids[grid].column + l}, ${grids[grid].row + k})`}</div>)
             }
         }
     }
 
+    // favourites
 
+    const favesShown = posts.filter(post => post.favourite);
+    const favesNotShown = faves.filter((fave)=>{
+        return favesShown.filter(post => post.id === fave.id).length === 0;
+    })
+
+    let favourites = favesNotShown.map((post, i) => {
+        const wallPost = <Post favourite={post.favourite} key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
+        return wallPost;
+    })
+
+    let favouritesContainers = favourites.slice(0, grids[grid].empty.length).map((post, i) => {
+        let position = {
+            gridColumn: grids[grid].empty[i].column - grids[grid].column + 1,
+            gridRow: grids[grid].empty[i].row - grids[grid].row + 1
+        }
+        if(debug && post.props.favourite){
+            position = {
+                ...position,
+                background: "rgba(255, 0, 0, .5)"
+            }
+        }
+        return <div style={position} key={`fcontainer-${i}`}>
+                {post}
+            </div>
+    })
+
+    containers = [
+        ...containers,
+        ...favouritesContainers
+    ]
+    console.log(favesNotShown.length, favouritesContainers, favesNotShown);
 
     // dynamic grid layout
     const gridScale = 1;

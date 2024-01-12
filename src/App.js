@@ -4,7 +4,7 @@ import "./sass/App.scss";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as actionTypes from "./store/actions";
-import { Server } from "./constants/constants";
+import { Server, grids } from "./constants/constants";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 // components
