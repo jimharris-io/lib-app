@@ -18,6 +18,7 @@ import PageNotFound from "./components/admin/PageNotFound";
 
 // firebase
 import { firebaseConfigs } from "./firebase/firebase";
+import { setLogLevel } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
 // bootstrap
@@ -36,7 +37,7 @@ setTimeout(() => {
 function App(props) {
 
   const [app, setApp] = useState();
-  const [server, setServer] = useState(Server.PRODUCTION);
+  const [server, setServer] = useState(Server.DEVELOPMENT);
 
   // modal
 
@@ -61,6 +62,7 @@ function App(props) {
 
   useEffect(() => {
     const app = firebaseConfigs.find((config) => config.name === server);
+    // setLogLevel("debug");
     setApp(initializeApp(app.config, app.name));
   }, [props, server]);
 

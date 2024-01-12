@@ -8,6 +8,7 @@ const Test = (props) => {
     const [probability, setProbability] = useState(0);
     const [intervalRef, setIntervalRef] = useState(0);
     const [testBegan, setTestBegan] = useState(new Date().toLocaleTimeString('en-GB'));
+    const [debug, setDebug] = useState(false);
 
     useEffect(() => {
         if(running){
@@ -78,6 +79,11 @@ const Test = (props) => {
         props.save(data);
     }
 
+    const toggleDebug = () => {
+        // const newDebug = !debug;
+        // setDebug(newDebug)
+        // props.debug(newDebug);
+    }
 
     const manual = (val) => {
         post();
@@ -106,6 +112,7 @@ const Test = (props) => {
                             <Button onClick={start} disabled={running} className="" variant="primary" type="">Start</Button>
                             <Button onClick={stop} disabled={!running} className="" variant="primary" type="">Stop</Button>
                             <Button onClick={manual} disabled={running} className="" variant="primary" type="">Manual</Button>
+                            {/* <Button onClick={toggleDebug} className="" variant="primary" type="">Toggle debug</Button> */}
                         </Stack>
                     </FormGroup>
                 </Stack>

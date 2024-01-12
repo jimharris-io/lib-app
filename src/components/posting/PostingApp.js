@@ -66,7 +66,7 @@ const PostingApp = (props) => {
     const [appTimeout, setAppTimeout] = useState(5);
 
     const params = useParams();
-    const [usingCAPTCHA, setUsingCAPTCHA] = useState(params.option !== "onsite");
+    const [usingCAPTCHA, setUsingCAPTCHA] = useState(false/*params.option !== "onsite"*/);
     
     const ref = useRef(null);
     const captchaRef = useRef(null)

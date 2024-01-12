@@ -32,15 +32,20 @@
     bottom: 0;
     display: flex;
     padding: 4vh 2vw;
+    padding-bottom: 3vh; // bill adj
     .bhcc.on-wall {
       width: 13vw;
       height: 13.5vh;
     }
     .library-on.on-wall {
-      width: 10vw;
-      height: 5vh;
-      margin-left: 3vw;
-      margin-top: 2vh;
+      // width: 10vw;  // bill adj
+      // height: 5vh;
+      // margin-left: 3vw;
+      // margin-top: 2vh;
+      width: 12.5vw;
+      height: 8.25vh;
+      margin-left: 2vw;
+      margin-top: 4vh;
     }
   }
   .bottom-right {
@@ -50,14 +55,16 @@
     bottom: 0;
     display: flex;
     padding: 4vh 2vw;
+    padding-right: 4vw; // bill adj
+    padding-bottom: 3vh; // bill adj
     .join-alt {
       color: white;
       font-family: "Söhne Leicht";
       width: 17vw;
-      // font-size: calc(16px + (24 - 16) * (100vw - 1024px) / (1920 - 1024));
-      // line-height: 1.1;
-      font-size: calc(20px + (36 - 20) * (100vw - 1024px) / (1920 - 1024));
-      line-height: 1.25;
+      // font-size: calc(20px + (36 - 20) * (100vw - 1024px) / (1920 - 1024)); // bill adj
+      // line-height: 1.25;
+      font-size: calc(20px + (44 - 20) * (100vw - 1024px) / (1920 - 1024));
+      line-height: 1;
       p {
         margin-bottom: 0;
       }
@@ -70,17 +77,21 @@
     top: 0;
     display: flex;
     padding: 2vh 2vw;
+    padding-top: 1.5vh; // bill adj
     .tag-line {
       color: white;
-      font-family: "Söhne Halbfett";
+      font-family: "Söhne Leicht";
       width: 25vw;
       // font-size: calc(24px + (36 - 24) * (100vw - 1024px) / (1920 - 1024));
       // line-height: 1.25;
       font-size: calc(20px + (36 - 20) * (100vw - 1024px) / (1920 - 1024));
-      line-height: 1.25;
+      // line-height: 1.25;  // bill adj
+      line-height: 1;
+      padding-top: 4vh; // bill adj
     }
     .everyones.on-wall {
-      width: 19vw;
+      // width: 19vw;  // bill adj
+      width: 21vw;
       height: 15vh;
     }
   }

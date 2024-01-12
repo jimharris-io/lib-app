@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 import { useCallback, useRef } from "react";
 import { connect } from "react-redux";
 import * as actionTypes from "./../../store/actions";
-import { Server, SortOrder, SortBy, pagelength } from './../../constants/constants';
+import { Server, SortOrder, SortBy, pagelength, Internal } from './../../constants/constants';
 import { toPng } from 'html-to-image'
 
 // firebase
@@ -33,9 +33,10 @@ const Admin = (props) => {
     const [error, setError ] = useState('');
 
     const [minGrid, setMinGrid] = useState(0);
-    const [maxGrid, setMaxGrid] = useState(4);
+    const [maxGrid, setMaxGrid] = useState(3);
     const [wallTimeout, setWallTimeout] = useState(30);
     const [appTimeout, setAppTimeout] = useState(15);
+    const [videoTimeout, setVideoTimeout] = useState(5);
 
     const [, setUser] = useState(null);
     const [auth, setAuth] = useState(null);
@@ -80,6 +81,8 @@ const Admin = (props) => {
             setMaxGrid(settings.gridMax);
             setWallTimeout(settings.wallTimeout);
             setAppTimeout(settings.appTimeout);
+            setVideoTimeout(settings.videoTimeout);
+            
         }, (err) => {
             props.onErrorMessage({
                 type: actionTypes.ERROR_MESSAGE,
@@ -171,6 +174,12 @@ const Admin = (props) => {
     const changeAppRange = (e) => {
         updateSettings({
             appTimeout: parseInt(e.target.value)
+        })
+    }
+
+    const changeVideoRange = (e) => {
+        updateSettings({
+            videoTimeout: parseInt(e.target.value)
         })
     }
 
@@ -361,6 +370,20 @@ const Admin = (props) => {
             });
     }
 
+    const debug = async (flag) => {
+        // const command = flag ? Internal.TOGGLE_DEBUG : Internal.NONE;
+        // await updateDoc(doc(getFirestore(props.app), "settings", props.app.options.settingsId), {
+        //     internal: flag
+        // }).then((res)=>{})
+        // .catch((err)=>{
+        //     props.onErrorMessage({
+        //         type: actionTypes.ERROR_MESSAGE,
+        //         title: "toggling debug",
+        //         error: err
+        //     })
+        // }).finally(()=>{})
+    }
+
     const sort =
         <Stack direction="horizontal" gap={2}>
             {dateSortOrder === SortOrder.ASCENDING ?
@@ -416,15 +439,21 @@ const Admin = (props) => {
         </FormGroup>
 
     const wallTimeoutMarkup =
-        <FormGroup controlId="wall">
+        <FormGroup controlId="wall_timeout">
             <Form.Label>Wall timeout: {wallTimeout} mins</Form.Label>
             <Form.Range step="5" min="5" max="60" onChange={changeWallRange} value={wallTimeout}/>
         </FormGroup>
 
     const appTimeoutMarkup =
-        <FormGroup controlId="wall">
+        <FormGroup controlId="app_timeout">
             <Form.Label>App timeout: {appTimeout} mins</Form.Label>
             <Form.Range step="5" min="5" max="60" onChange={changeAppRange} value={appTimeout}/>
+        </FormGroup>
+
+    const videoTimeoutMarkup =
+        <FormGroup controlId="video_timeout">
+            <Form.Label>Video timeout: {videoTimeout} mins</Form.Label>
+            <Form.Range step="1" min="1" max="30" onChange={changeVideoRange} value={videoTimeout}/>
         </FormGroup>
 
     let sorted;
@@ -475,7 +504,7 @@ const Admin = (props) => {
             </Card.Header>
         </Card>
 
-    const test = <Test save={save}/>
+    const test = <Test debug={debug} save={save}/>
 
     const main =
         <div>
@@ -492,6 +521,7 @@ const Admin = (props) => {
                         {maxGridSize}
                         {wallTimeoutMarkup}
                         {appTimeoutMarkup}
+                        {videoTimeoutMarkup}
                     </Stack>
                 </Card.Body>
             </Card>

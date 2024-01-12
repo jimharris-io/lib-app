@@ -38,8 +38,12 @@ const Wall = (props) => {
     const [minGrid, setMinGrid] = useState(0);
     const [maxGrid, setMaxGrid] = useState(4);
     const [wallTimeout, setWallTimeout] = useState(5);
+    const [videoTimeout, setVideoTimeout] = useState(1);
 
     const [idle, setIdle] = useState({value: false});
+    const [videoPlaying, setVideoPlaying] = useState({value: false});
+
+    const [debug, setDebug] = useState(false);
 
     //sleep
     useEffect(()=>{
@@ -47,6 +51,7 @@ const Wall = (props) => {
         const timeout = setTimeout(()=>{
             if(!idle.value){
                 setIdle({...{value: true}});
+                setVideoPlaying({...{value: true}});
                 // console.log("// wall: executed timeout, set idle");
             }/* else {
                 console.log("// wall: executed timeout, nothing to do");
@@ -58,13 +63,39 @@ const Wall = (props) => {
         }
     }, [idle, wallTimeout])
 
+    // video timeout
+    useEffect(()=>{
+        // console.log("// video: init timeout");
+        const timeout = setTimeout(()=>{
+            if(videoPlaying.value){
+                setVideoPlaying({...{value: false}});
+                wake();
+                // console.log("// video: executed timeout, called wake");
+            } else {
+                // console.log("// video: executed timeout, nothing to do");
+            }
+        }, videoTimeout * 60 * 1000)
+        return () => {
+            // console.log("// video: cleared timeout");
+            clearTimeout(timeout);
+        }
+    }, [videoPlaying, videoTimeout])
+
     // wake
     useEffect(()=>{
         if(!props.app) return;
         let unsubscribe = onSnapshot(collection(getFirestore(props.app), "settings"), (snapshot)=>{
             const settings = snapshot.docs.map((doc) => ({...doc.data(), id: props.app.options.settingsId }))[0];
+            // if(settings.internal === Internal.TOGGLE_DEBUG){
+            //     if(debug) {
+            //         setDebug(false);
+            //     } else {
+            //         setDebug(true);
+            //     }
+            // }
             if(settings.internal === Internal.WAKE_WALL){
                 setIdle({...{value:false}});
+                setVideoPlaying({...{value: false}});
                 const reset = async () => {
                     await updateDoc(doc(getFirestore(props.app), "settings", props.app.options.settingsId), {
                         internal: Internal.NONE
@@ -146,6 +177,7 @@ const Wall = (props) => {
             setMinGrid(settings.gridMin);
             setMaxGrid(settings.gridMax);
             setWallTimeout(settings.wallTimeout);
+            setVideoTimeout(settings.videoTimeout);
         }, (err) => {
             props.onErrorMessage({
                 type: actionTypes.ERROR_MESSAGE,
@@ -178,7 +210,7 @@ const Wall = (props) => {
     let sorted = aggregate.sort((a, b) => (a.created.seconds > b.created.seconds) ? 1 : -1);
 
     let wallPosts = sorted.map((post, i) => {
-        const wallPost = <Post key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
+        const wallPost = <Post favourite={post.favourite} key={`post-${i}`} classList="wall display" font={post.font} message={post.message} textColour={post.textColour} fill={post.backgroundColour} strokeWidth="5" stroke={post.borderColour} shape={post.shape}/>
         return wallPost;
     })
 
@@ -188,9 +220,15 @@ const Wall = (props) => {
     const gridHeight = grids[grid].height;
 
     let containers = wallPosts.map((post, i) => {
-        const position = {
+        let position = {
             gridColumn: walks[0][i].column - grids[grid].column + 1,
             gridRow: walks[0][i].row - grids[grid].row + 1
+        }
+        if(debug && post.props.favourite){
+            position = {
+                ...position,
+                background: "red"
+            }
         }
         let anim = "";
         if(i === wallPosts.length - 1) {
@@ -204,6 +242,28 @@ const Wall = (props) => {
             {post}
         </div>
     })
+
+    if(debug){
+        for(let k = 0; k < grids[grid].height; k++){
+            for(let l = 0; l < grids[grid].width; l++){
+                const style = {
+                    color: "darkgray",
+                    gridColumn: l + 1,
+                    gridRow: k + 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "2rem",
+                    border: "1px dashed white",
+                    borderRight: "none",
+                    borderBottom: "none"
+                }
+                containers.push(<div style={style} key={`container-${l}-${k}`}>{`(${grids[grid].column + l}, ${grids[grid].row + k})`}</div>)
+            }
+        }
+    }
+
+
 
     // dynamic grid layout
     const gridScale = 1;

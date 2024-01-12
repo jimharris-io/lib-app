@@ -18,7 +18,7 @@ export const version = {
         cheatMode: true
     },
     "everyones-library": { // production
-        release: "0.9.3",
+        release: "0.9.6",
         show: true,
         dismiss: 10,
         cheatMode: true
@@ -163,7 +163,8 @@ export const SortBy = {
 export const Internal = {
     WAKE_WALL: "wake_wall",
     RESET_WAKE: "reset_wake",
-    NONE: "none"
+    NONE: "none",
+    TOGGLE_DEBUG: "toggle_debug"
 }
 
 export const grids = [
