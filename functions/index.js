@@ -1,38 +1,40 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+require('dotenv').config();
 
-// const {onRequest} = require("firebase-functions/v2/https");
-// const logger = require("firebase-functions/logger");
-
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-// The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
-const {logger} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/v2/https");
-const {onDocumentCreated} = require("firebase-functions/v2/firestore");
-
-// The Firebase Admin SDK to access Firestore.
-const {initializeApp} = require("firebase-admin/app");
-const {getFirestore} = require("firebase-admin/firestore");
+const promise = require('request-promise');
+const { logger } = require("firebase-functions");
+const { onRequest } = require("firebase-functions/v2/https");
+const { initializeApp } = require("firebase-admin/app");
 
 initializeApp();
 
-exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-  response.send({"data": "hello world"});
-});
+// exports.helloWorld = onRequest((request, response) => {
+//   logger.info(request.body.data, { structuredData: true });
+//   response.send({ data: request.body.data });
+// });
+
+exports.verify = onRequest((req, res) => {
+  const response = req.body.data
+  promise({
+      uri: 'https://recaptcha.google.com/recaptcha/api/siteverify',
+      method: 'POST',
+      formData: {
+          secret: process.env.SECRET_KEY,
+          response: response
+      },
+      json: true
+  }).then(result => {
+      if (result.success) {
+          res.send({data: {pass: true}})
+      }
+      else {
+          logger.info(result, { structuredData: true });
+          res.send({data: {pass: false, reason: result['error-codes']}})
+      }
+  }).catch(reason => {
+      logger.info(reason, { structuredData: true });
+      res.send({data: reason})
+  })
+})
 
 /*
 
@@ -41,9 +43,10 @@ Google tutorials:
 https://firebase.google.com/docs/functions/get-started?gen=2nd
 https://firebase.google.com/docs/functions/callable?gen=2nd
 
-ReCAPTCHA tutorial:
+ReCAPTCHA tutorials:
 
 https://blog.logrocket.com/implement-recaptcha-react-application/
+https://firebase.blog/posts/2017/08/guard-your-web-content-from-abuse-with
 
 ReCAPTCHA set up:
 

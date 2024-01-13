@@ -4,6 +4,7 @@ import Carousel from 'react-bootstrap/Carousel';
 
 // firebase
 import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import {getFunctions, httpsCallable, connectFunctionsEmulator} from "firebase/functions";
 
 // app
 import { colours, shapes, fonts, randomMessages, Internal, confirmationTimeout, version } from '../../constants/constants';
@@ -66,16 +67,26 @@ const PostingApp = (props) => {
     const [appTimeout, setAppTimeout] = useState(5);
 
     const params = useParams();
-    const [usingCAPTCHA, setUsingCAPTCHA] = useState(false/*params.option !== "onsite"*/);
+    const [usingCAPTCHA, setUsingCAPTCHA] = useState(params.option !== "onsite");
+    const [functions, setFunctions] = useState(null);
+    const [verify, setVerify] = useState(null);
+    const captchaRef = useRef(null)
     
     const ref = useRef(null);
-    const captchaRef = useRef(null)
 
     useEffect(()=>{
         // overscroll bounce
         const html = document.getElementsByTagName("html");
         html[0].style.overflow = "hidden";
     }, [])
+
+    useEffect(() => {
+        if (props.app) {
+            const functions = getFunctions(props.app);
+            connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+            setFunctions(functions);
+        }
+    }, [props]);
 
     useEffect(()=>{
         // console.log("// app: init timeout");
@@ -130,20 +141,7 @@ const PostingApp = (props) => {
         })
     }
 
-    const saveHandler = async (event) => {
-        event.preventDefault();
-
-        if(index !== 5) return; // handle ios submitting on return key
-        if(message === "") return;
-
-        const matchAll = require('string.prototype.matchall') // support older ipad for demo
-        matchAll.shim()
-
-        if(new String().matchAll && matcher.hasMatch(message)){
-            warnProfanity();
-            return;
-        }
-
+    const save = async () => {
         props.onShowLoading({type: actionTypes.SHOW_LOADING});
 
         await addDoc(collection(getFirestore(props.app), "posts"), {
@@ -172,10 +170,73 @@ const PostingApp = (props) => {
         })
     }
 
-    const rand = () => {
+    const passCaptcha = () => {
+        const token = captchaRef.current.getValue();
+        const verify =  httpsCallable(functions, "verify");
+        captchaRef.current.reset();
+        verify && verify(token)
+            .then((result) => {
+                // console.log(result);
+                if(result.data.pass === false){
+                    props.onOpenModal({
+                        type: actionTypes.OPEN_MODAL,
+                        contents: {
+                            customClass: "posting",
+                            title: "Complete reCAPTCHA",
+                            body: <span>Please complete reCAPTCHA to continue.</span>,
+                            reject: null,
+                            resolve: "",
+                            customButton: <Ok context="app"/>
+                        },
+                        resolve: null
+                    })
+                } else {
+                    if(result.data.pass === true){
+                        save();
+                    }
+                }
+            })
+        .catch((error) => {
+            // console.log("//", error);
+            props.onOpenModal({
+                type: actionTypes.OPEN_MODAL,
+                contents: {
+                    customClass: "posting",
+                    title: "reCAPTCHA",
+                    body: <span>{error.toString()}</span>,
+                    reject: null,
+                    resolve: "",
+                    customButton: <Ok context="app"/>
+                },
+                resolve: null
+            })
+        });
+    }
 
-        console.log(version[props.server]);
-        
+    const saveHandler = async (event) => {
+        event.preventDefault();
+
+        if(index !== 5) return; // handle ios submitting on return key
+        if(message === "") return;
+
+        const matchAll = require('string.prototype.matchall') // support older ipad for demo
+        matchAll.shim()
+
+        if(new String().matchAll && matcher.hasMatch(message)){
+            warnProfanity();
+            return;
+        }
+
+        if(usingCAPTCHA){
+            passCaptcha();
+        } else {
+            save();
+        }
+
+    }
+
+    const rand = () => {
+ 
         if(!version[props.server].cheatMode) return;
 
         const shuffleArray = (array) => {
@@ -355,7 +416,7 @@ const PostingApp = (props) => {
         reset();
     }
 
-    const data = [
+    let data = [
         {
             jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="shape">
                     {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
@@ -411,25 +472,12 @@ const PostingApp = (props) => {
                     {/* </Stack> */}
                 </Form.Group>
         },
-        // {
-        //     jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="message">
-        //             {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
-        //                 <Form.Label><span className="sohne-leicht">Step six</span><br/>Enter your message</Form.Label>
-        //                 <Stack className="justify-content-center" direction="horizontal">
-        //                 <Form.Group className="message-input" controlId="message">
-        //                     <Form.Control enterKeyHint="done" placeholder="Tap to type your message" autoComplete="off" ref={ref} onKeyUp={dismissKeyboard} onChange={changeMessage} value={message} type="text"/>
-        //                 </Form.Group>
-        //                 </Stack>
-        //             {/* </Stack> */}
-        //         </Form.Group>
-        // },
         {
             jsx: <Form.Group className="h-100 carousel-item-contents-container" controlId="font">
                     {/* <Stack className="h-100 justify-content-evenly" direction="vertical"> */}
-                        <Form.Label>Submit your message</Form.Label>
+                        <Form.Label style={usingCAPTCHA ? {width:"80%", margin: "0 auto"}:{}}>{usingCAPTCHA ? "Complete reCAPTCHA and s":"S"}ubmit your message</Form.Label>
                         <Stack className="align-items-center" direction="vertical">
                             <button onClick={saveHandler} disabled={message === "" && "disabled"} className="submit-button" type="button"><Submit context={`app ${message === "" && 'disabled'}`}/></button>
-                            {usingCAPTCHA ? <ReCAPTCHA theme="dark" sitekey={"6Lc3IkspAAAAABMFnfMr_Vm9WF6_EUhtqdhzaRfv"} ref={captchaRef} /> : ''}
                         </Stack>
                     {/* </Stack> */}
                 </Form.Group>
@@ -498,6 +546,8 @@ const PostingApp = (props) => {
     //         </Form.Group>
     //     </section> : '';
 
+    // {usingCAPTCHA ? <ReCAPTCHA theme="dark" sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef} /> : ''}
+
     const main =
         <Form className="w-100 h-100" onSubmit={(e)=>e.preventDefault()}>
             <main onClick={awake} className={`container-md ${params.option === "onsite" && 'onsite'}`} id="posting-app">
@@ -507,9 +557,12 @@ const PostingApp = (props) => {
                     <span>Please rotate your device</span>
                 </div>
 
-                <header onClick={rand}>
-                    <About context="header"/>
-                </header>
+                <header className="justify-content-center" onClick={rand}>
+                    {usingCAPTCHA && index === 5 ?
+                        <ReCAPTCHA theme="dark" sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef} />:
+                        <About context="header"/>
+                    }
+                </header>    
 
                 <div id="contents" className={`w-100 step-${index}`}>
 

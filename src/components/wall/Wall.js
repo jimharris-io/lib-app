@@ -298,7 +298,7 @@ const Wall = (props) => {
         ...containers,
         ...favouritesContainers
     ]
-    console.log(favesNotShown.length, favouritesContainers, favesNotShown);
+    // console.log(favesNotShown.length, favouritesContainers, favesNotShown);
 
     // dynamic grid layout
     const gridScale = 1;
