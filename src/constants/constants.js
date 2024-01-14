@@ -7,24 +7,24 @@ export const Server = {
 export const version = {
   "lib-app": {
     // development
-    release: "0.9.3",
+    release: "1.1",
     show: true,
     dismiss: 0,
     cheatMode: true,
   },
   "lib-production": {
     // staging
-    release: "0.9.3",
+    release: "1.1",
     show: true,
     dismiss: 0,
     cheatMode: true,
   },
   "everyones-library": {
     // production
-    release: "0.9.6",
+    release: "1.1",
     show: true,
     dismiss: 10,
-    cheatMode: true,
+    cheatMode: false,
   },
 };
 

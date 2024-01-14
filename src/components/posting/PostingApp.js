@@ -83,7 +83,7 @@ const PostingApp = (props) => {
     useEffect(() => {
         if (props.app) {
             const functions = getFunctions(props.app);
-            connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+            // connectFunctionsEmulator(functions, "127.0.0.1", 5001);
             setFunctions(functions);
         }
     }, [props]);
@@ -172,7 +172,7 @@ const PostingApp = (props) => {
 
     const passCaptcha = () => {
         const token = captchaRef.current.getValue();
-        const verify =  httpsCallable(functions, "verify");
+        const verify =  httpsCallable(functions, "verify", {region:""});
         captchaRef.current.reset();
         verify && verify(token)
             .then((result) => {
