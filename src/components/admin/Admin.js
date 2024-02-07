@@ -23,7 +23,7 @@ import { signOut, signInWithEmailAndPassword, getAuth, onAuthStateChanged } from
 import { Button, Form, FormGroup, Container, Row, Col, Card, Stack, Pagination } from "react-bootstrap";
 
 const Admin = (props) => {
-    
+
     const [dateSortOrder, setDateSortOrder] = useState(SortOrder.ASCENDING);
     const [nameSortOrder, setNameSortOrder] = useState(SortOrder.ASCENDING);
     const [sortBy, setSortBy] = useState(SortBy.NAME);
