@@ -19,6 +19,8 @@
 .env.production.local
 .env
 
+.gitsecret
+
 /src/firebase/firebase.js
 
 npm-debug.log*
